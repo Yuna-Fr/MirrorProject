@@ -10,32 +10,36 @@ namespace Player
 
 		[Header("SETTINGS")]
 		[SerializeField] float moveSpeed = 10f;
+		[SerializeField] float stickThreshold = 0.05f;
 
 		InputSystem inputs;
+		Vector2 moveInput;
 		Vector3 moveDirection;
 
 		void OnEnable()
 		{
 			inputs = new InputSystem();
 
-			inputs.InGame.Move.Enable();
-
-			inputs.InGame.Interact.Enable();
+			inputs.InGame.Enable();
 			inputs.InGame.Interact.performed += OnInteract;
 		}
 
 		void OnDisable()
 		{
-			inputs.InGame.Move.Disable();
-
-			inputs.InGame.Interact.performed += OnInteract;
-			inputs.InGame.Interact.Disable();
+			inputs.InGame.Interact.performed -= OnInteract;
+			inputs.InGame.Disable();
 		}
 
 		void FixedUpdate()
 		{
-			moveDirection = new(inputs.InGame.Move.ReadValue<Vector2>().x, 0.0f, inputs.InGame.Move.ReadValue<Vector2>().y);
-			controller.Move(moveDirection.normalized * (moveSpeed * Time.deltaTime) + new Vector3(0.0f, 0f, 0f) * Time.deltaTime);
+			moveInput = inputs.InGame.Move.ReadValue<Vector2>();
+			
+			if (Mathf.Abs(moveInput.x) < stickThreshold && Mathf.Abs(moveInput.y) < stickThreshold) //To avoid joystick drift
+				moveDirection = Vector3.zero;
+			else
+				moveDirection = new(moveInput.x, 0.0f, moveInput.y);
+
+			controller.Move(moveDirection.normalized * (moveSpeed * Time.deltaTime));
 		}
 
 		void OnInteract(InputAction.CallbackContext context)
