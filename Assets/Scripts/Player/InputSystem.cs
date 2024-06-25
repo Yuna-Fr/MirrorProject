@@ -48,7 +48,7 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": ""ZQSD"",
+                    ""name"": ""WASD"",
                     ""id"": ""60880a63-9417-4732-98c0-53fc4e30509f"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
@@ -61,7 +61,7 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""up"",
                     ""id"": ""6973b728-4ca5-4a48-b5b8-f977587e4dde"",
-                    ""path"": ""<Keyboard>/z"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -83,7 +83,7 @@ public partial class @InputSystem: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""left"",
                     ""id"": ""2ac8ae6d-307c-4813-927e-d3b98507674d"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
