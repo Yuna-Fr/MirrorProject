@@ -9,14 +9,14 @@ namespace Player
 		[SerializeField] CharacterController controller;
 
 		[Header("SETTINGS")]
-		[SerializeField] float moveSpeed = 10f;
+		[SerializeField] float speed = 10f;
 		[SerializeField] float stickThreshold = 0.05f;
 
 		InputSystem inputs;
 		Vector2 moveInput;
 		Vector3 moveDirection;
 
-		void OnEnable()
+		void Awake()
 		{
 			inputs = new InputSystem();
 
@@ -24,7 +24,7 @@ namespace Player
 			inputs.InGame.Interact.performed += OnInteract;
 		}
 
-		void OnDisable()
+		void OnDestroy()
 		{
 			inputs.InGame.Interact.performed -= OnInteract;
 			inputs.InGame.Disable();
@@ -39,7 +39,7 @@ namespace Player
 			else
 				moveDirection = new(moveInput.x, 0.0f, moveInput.y);
 
-			controller.Move(moveDirection.normalized * (moveSpeed * Time.deltaTime));
+			controller.Move(moveDirection.normalized * (speed * Time.deltaTime));
 		}
 
 		void OnInteract(InputAction.CallbackContext context)
