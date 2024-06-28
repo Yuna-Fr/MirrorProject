@@ -1,18 +1,19 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Player
 {
-	public class PlayerController : MonoBehaviour
-	{
+	public class PlayerController : NetworkBehaviour
+    {
 		[Header("SETTINGS")]
 		[SerializeField] float speed = 5.0f;
 		[SerializeField] float stickThreshold = 0.05f;
         [SerializeField] float dashLength = 2.5f;
 		[SerializeField] float dashReload = 0.3f;
-		[SerializeField] float dashSpeed = 0.05f;
-        [SerializeField] float rotationSpeed = 0.02f;
+		[SerializeField] float dashSpeed = 50.0f;
+        [SerializeField] float rotationSpeed = 15.0f;
 
         InputSystem inputs;
         CharacterController characterController;
@@ -22,9 +23,12 @@ namespace Player
 		bool canDash = true;
 		bool isDashing = false;
 
-		void Awake()
+		void Start()
 		{
-			characterController = GetComponent<CharacterController>();
+            if (!isLocalPlayer)
+                return;
+
+            characterController = GetComponent<CharacterController>();
 
 			inputs = new InputSystem();
 			inputs.InGame.Enable();
@@ -33,7 +37,10 @@ namespace Player
 
 		void OnDestroy()
 		{
-			inputs.InGame.Interact.performed -= OnDash;
+            if (!isLocalPlayer)
+                return;
+
+            inputs.InGame.Interact.performed -= OnDash;
 			inputs.InGame.Disable();
 		}
 
@@ -53,7 +60,7 @@ namespace Player
 				if (moveDirection != Vector3.zero)
 				{
                     moveRotation = Quaternion.LookRotation(moveDirection.normalized);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, moveRotation, rotationSpeed);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, moveRotation, rotationSpeed * Time.deltaTime);
                 }
             }
 		}
@@ -74,7 +81,7 @@ namespace Player
 		{
             while ((transform.position - destination).magnitude >= 0.1f)
 			{
-                transform.position = Vector3.Lerp(transform.position, destination, 0.05f);
+				transform.position = Vector3.Lerp(transform.position, destination, dashSpeed * Time.deltaTime) ;
 				yield return new WaitForSeconds(Time.deltaTime);
 			}
 
