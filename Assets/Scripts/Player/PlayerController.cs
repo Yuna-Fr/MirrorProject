@@ -7,15 +7,18 @@ namespace Player
 	public class PlayerController : MonoBehaviour
 	{
 		[Header("SETTINGS")]
-		[SerializeField] float speed = 10.0f;
+		[SerializeField] float speed = 5.0f;
 		[SerializeField] float stickThreshold = 0.05f;
-		[SerializeField] float dashLength = 3.0f;
-		[SerializeField] float dashReload = 0.5f;
+        [SerializeField] float dashLength = 2.5f;
+		[SerializeField] float dashReload = 0.3f;
+		[SerializeField] float dashSpeed = 0.05f;
+        [SerializeField] float rotationSpeed = 0.02f;
 
-		InputSystem inputs;
+        InputSystem inputs;
         CharacterController characterController;
         Vector2 stickVector;
 		Vector3 moveDirection;
+		Quaternion moveRotation;
 		bool canDash = true;
 		bool isDashing = false;
 
@@ -40,12 +43,18 @@ namespace Player
             {
                 stickVector = inputs.InGame.Move.ReadValue<Vector2>();
 
-                if (Mathf.Abs(stickVector.x) < stickThreshold && Mathf.Abs(stickVector.y) < stickThreshold) //To avoid joystick drift
+                if (Mathf.Abs(stickVector.x) < stickThreshold && Mathf.Abs(stickVector.y) < stickThreshold)
                     moveDirection = Vector3.zero;
                 else
                     moveDirection = new(stickVector.x, 0.0f, stickVector.y);
 
                 characterController.Move(moveDirection * speed * Time.deltaTime);
+
+				if (moveDirection != Vector3.zero)
+				{
+                    moveRotation = Quaternion.LookRotation(moveDirection.normalized);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, moveRotation, rotationSpeed);
+                }
             }
 		}
 
@@ -55,7 +64,7 @@ namespace Player
 			{
 				canDash = false;
 				isDashing = true;
-				Vector3 destination = transform.position + (moveDirection.normalized * dashLength);
+				Vector3 destination = transform.position + (transform.forward * dashLength);
 				StartCoroutine(Dash(destination));
 				StartCoroutine(ReloadDash());
 			}
@@ -63,9 +72,9 @@ namespace Player
 
 		IEnumerator Dash(Vector3 destination)
 		{
-            while ((transform.position - destination).magnitude >= 0.001f)
+            while ((transform.position - destination).magnitude >= 0.1f)
 			{
-                transform.position = Vector3.Lerp(transform.position, destination, 0.1f);
+                transform.position = Vector3.Lerp(transform.position, destination, 0.05f);
 				yield return new WaitForSeconds(Time.deltaTime);
 			}
 
