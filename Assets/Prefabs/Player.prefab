@@ -580,7 +580,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8208608467922057393}
-  - component: {fileID: 7048267517795952503}
   - component: {fileID: 147890964559712172}
   - component: {fileID: 8549259789767324668}
   - component: {fileID: 3443091421578884501}
@@ -610,23 +609,6 @@ Transform:
   - {fileID: 6317694229299272768}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7048267517795952503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8710837982379838766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ec5b840049d1fe4980243c3c4bc96f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  componentsToDisable:
-  - {fileID: 147890964559712172}
 --- !u!114 &147890964559712172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -639,12 +621,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea4a3866ac54a349856cc2b55221fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   speed: 5
   stickThreshold: 0.05
   dashLength: 2.5
   dashReload: 0.3
-  dashSpeed: 0.05
-  rotationSpeed: 0.02
+  dashSpeed: 50
+  rotationSpeed: 15
 --- !u!114 &8549259789767324668
 MonoBehaviour:
   m_ObjectHideFlags: 0
