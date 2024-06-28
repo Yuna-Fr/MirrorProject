@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class CustomNetworkManager : NetworkManager
 {
-	[Header("CUSTOM")]
-	[SerializeField] List<Transform> spawnList;
-
 	public override void OnServerAddPlayer(NetworkConnectionToClient conn)
 	{
 		base.OnServerAddPlayer(conn);
