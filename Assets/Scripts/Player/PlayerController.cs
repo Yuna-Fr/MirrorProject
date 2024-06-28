@@ -26,7 +26,10 @@ namespace Player
 		void Start()
 		{
             if (!isLocalPlayer)
+			{
+				enabled = false;
                 return;
+            }
 
             characterController = GetComponent<CharacterController>();
 
