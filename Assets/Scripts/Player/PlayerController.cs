@@ -23,6 +23,8 @@ namespace Player
 		bool canDash = true;
 		bool isDashing = false;
 
+		bool wasLocalPlayer;
+
 		void Start()
 		{
             if (!isLocalPlayer)
@@ -31,6 +33,7 @@ namespace Player
                 return;
             }
 
+			wasLocalPlayer = true;
             characterController = GetComponent<CharacterController>();
 
 			inputs = new InputSystem();
@@ -40,8 +43,8 @@ namespace Player
 
 		void OnDestroy()
 		{
-            if (!isLocalPlayer)
-                return;
+			if (!wasLocalPlayer)
+				return;
 
             inputs.InGame.Interact.performed -= OnDash;
 			inputs.InGame.Disable();
@@ -49,6 +52,9 @@ namespace Player
 
 		void Update()
 		{
+			if (!isLocalPlayer)
+				return;
+
             if (!isDashing)
             {
                 stickVector = inputs.InGame.Move.ReadValue<Vector2>();
