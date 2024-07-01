@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3e7eb9718a3499468be45fd7e8af309, type: 3}
+  m_Name: Salad
+  m_EditorClassIdentifier: 
+  name: Vege Burger
+  image: {fileID: 0}
+  ingredients:
+  - {fileID: 11400000, guid: 82104be32d3bb0b4bb1be32bab0e5a06, type: 2}
+  - {fileID: 11400000, guid: 691bef52cd63d384cad4721c7879f17c, type: 2}
