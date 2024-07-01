@@ -7,7 +7,7 @@ namespace Player
 {
 	public class PlayerController : NetworkBehaviour
     {
-		[Header("SETTINGS")]
+		[Header("MOVEMENTS")]
 		[SerializeField] float speed = 5.0f;
 		[SerializeField] float stickThreshold = 0.05f;
         [SerializeField] float dashLength = 2.5f;
@@ -15,15 +15,20 @@ namespace Player
 		[SerializeField] float dashSpeed = 50.0f;
         [SerializeField] float rotationSpeed = 15.0f;
 
+		[Header("INTERACTIONS")]
+		[SerializeField] Transform holdPosition;
+
         InputSystem inputs;
         CharacterController characterController;
+        Quaternion moveRotation;
+        Vector3 moveDirection;
         Vector2 stickVector;
-		Vector3 moveDirection;
-		Quaternion moveRotation;
-		bool canDash = true;
+        bool wasLocalPlayer;
+        bool canDash = true;
 		bool isDashing = false;
+		bool isHolding = false;
 
-		bool wasLocalPlayer;
+		
 
 		void Start()
 		{
