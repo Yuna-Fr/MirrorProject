@@ -8,5 +8,6 @@ public class RecipeSO : ScriptableObject
 {
 	[SerializeField] string name;
 	[SerializeField] Image image;
-	[SerializeField] List<IngredientSO> ingredients;
+
+	public List<IngredientSO> ingredients;
 }
