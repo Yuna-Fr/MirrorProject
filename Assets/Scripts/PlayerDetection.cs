@@ -1,0 +1,145 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerDetection : MonoBehaviour
+{
+    [Header("ITEM DETECTION")]
+    [SerializeField] Transform detectionBoxCenter;
+    [SerializeField] Vector3 halfExtentsBox = new Vector3(0.65f,0.75f,0.65f);
+    [SerializeField] LayerMask itemLayer;
+    [SerializeField] int detectionBufferSize = 10;
+
+    [Header("FURNITURE DETECTION")]
+    [SerializeField] LayerMask furnitureLayer;
+    [SerializeField] float rayLength;
+
+    [Header("GIZMOS")]
+    [SerializeField] bool drawGizmos = false;
+    [SerializeField] bool drawIfSelected = false;
+    [SerializeField] Color noItemHitColor = Color.green;
+    [SerializeField] Color onItemHitColor = Color.red;
+    [SerializeField] Color noFurnitureHitColor = Color.green;
+    [SerializeField] Color onFurnitureHitColor = Color.red;
+
+    PlayerController playerController;
+    Collider[] detectionBuffer;
+    RaycastHit furnitureHitInfo;
+    Color itemGizmosColor;
+    Color furnitureGizmosColor;
+
+    void Start()
+    {
+        playerController = GetComponent<PlayerController>();
+        detectionBuffer = new Collider[detectionBufferSize];
+    }
+
+    void Update()
+    {
+        if (!playerController.IsHoldingItem())
+            DetectItem();
+
+        DetectFurniture();
+    }
+
+    void DetectFurniture()
+    {
+        if (Physics.Raycast(transform.position, transform.forward, out furnitureHitInfo, rayLength, furnitureLayer, QueryTriggerInteraction.Ignore))
+        {
+            furnitureGizmosColor = onFurnitureHitColor;
+            playerController.SetNewTargetedFurnitures(furnitureHitInfo.transform.gameObject);
+        }
+        else
+        {
+            furnitureGizmosColor = noFurnitureHitColor;
+            playerController.SetNewTargetedFurnitures(null);
+        }
+    }
+
+    void DetectItem()
+    {
+        int hits = Physics.OverlapBoxNonAlloc(detectionBoxCenter.position, halfExtentsBox, detectionBuffer, transform.rotation, itemLayer, QueryTriggerInteraction.Ignore);
+
+        if (hits > 0)
+        {
+            itemGizmosColor = onItemHitColor;
+            playerController.SetNewTargetedItem(GetDetectedItem(hits));
+        }
+        else
+        {
+            itemGizmosColor = noItemHitColor;
+            playerController.SetNewTargetedItem(null);
+        }
+    }
+
+    GameObject GetDetectedItem(int hits)
+    {
+        float dist;
+        float smallestDist = 10.0f;
+        int index = 0;
+
+        for (int i = 0; i < hits; i++)
+        {
+            dist = (detectionBuffer[i].transform.position - transform.position).magnitude;
+
+            if ( dist < smallestDist)
+            {
+                smallestDist = dist;
+                index = i;
+            }
+        }
+
+        return detectionBuffer[index].gameObject;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!drawGizmos || drawIfSelected)
+            return;
+
+        Matrix4x4 defaultMatrix = Gizmos.matrix;
+
+        if (!Application.isPlaying)
+            Gizmos.color = noItemHitColor;
+        else
+            Gizmos.color = itemGizmosColor;
+
+        Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
+        Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox * 2);
+
+        Gizmos.matrix = defaultMatrix;
+
+        if (!Application.isPlaying)
+            Gizmos.color = noFurnitureHitColor;
+        else
+            Gizmos.color = furnitureGizmosColor;
+
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * rayLength);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawGizmos || !drawIfSelected)
+            return;
+
+        Matrix4x4 defaultMatrix = Gizmos.matrix;
+
+        if (!Application.isPlaying)
+            Gizmos.color = noItemHitColor;
+        else
+            Gizmos.color = itemGizmosColor;
+
+        Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
+        Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox*2);
+
+        Gizmos.matrix = defaultMatrix;
+
+        if (!Application.isPlaying)
+            Gizmos.color = noFurnitureHitColor;
+        else
+            Gizmos.color = furnitureGizmosColor;
+
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * rayLength);
+    }
+
+}
