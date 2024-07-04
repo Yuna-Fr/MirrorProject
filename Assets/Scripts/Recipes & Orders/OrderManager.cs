@@ -33,7 +33,7 @@ public class OrderManager : MonoBehaviour
 
 	void LaunchNewRecipe()
 	{
-		if (waitingRecipes.Count <= 0)
+		if (recipes.Count <= 0)
 			return;
 
 		if (waitingRecipes.Count < maxwaitingRecipes)

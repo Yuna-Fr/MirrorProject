@@ -5,7 +5,7 @@ using UnityEngine;
 public class OrderManagerUI : MonoBehaviour
 {
     [SerializeField] Transform container;
-    [SerializeField] Transform recipeCardPrefab;
+    [SerializeField] RecipeCardUI recipeCardPrefab;
 
 	void Start()
 	{
@@ -19,7 +19,9 @@ public class OrderManagerUI : MonoBehaviour
 
 	public void AddCard(RecipeSO recipe)
     {
-        Instantiate(recipeCardPrefab, container);
+        if(recipe)
+
+        Instantiate(recipeCardPrefab, container).SetCard(recipe);
     }
 
     public void RemoveCard()

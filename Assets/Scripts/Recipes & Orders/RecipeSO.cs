@@ -6,8 +6,7 @@ using UnityEngine.UI;
 [CreateAssetMenu()]
 public class RecipeSO : ScriptableObject
 {
-	[SerializeField] string name;
-	[SerializeField] Image image;
-
+	public string name;
+	public Image image;
 	public List<IngredientSO> ingredients;
 }
