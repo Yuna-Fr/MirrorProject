@@ -105,7 +105,9 @@ public class PlayerDetection : MonoBehaviour
             Gizmos.color = itemGizmosColor;
 
         Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
-        Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox * 2);
+
+        if (!Application.isPlaying || (Application.isPlaying && !playerController.IsHoldingItem()))
+            Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox * 2);
 
         Gizmos.matrix = defaultMatrix;
 
@@ -130,7 +132,9 @@ public class PlayerDetection : MonoBehaviour
             Gizmos.color = itemGizmosColor;
 
         Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
-        Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox*2);
+
+        if (!Application.isPlaying || (Application.isPlaying && !playerController.IsHoldingItem()))
+            Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox*2);
 
         Gizmos.matrix = defaultMatrix;
 

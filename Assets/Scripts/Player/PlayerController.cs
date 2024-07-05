@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,11 +15,12 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] float rotationSpeed = 15.0f;
 
 	[Header("INTERACTIONS")]
-	[SerializeField] Transform holdPosition;
+	[SerializeField] Transform holdingPositionTransform;
 
     InputSystem inputs;
     CharacterController characterController;
     GameObject targetedItem;
+	GameObject holdItem;
 	GameObject targetedFurniture;
     Vector3 moveDirection;
     Vector2 stickVector;
@@ -40,6 +42,7 @@ public class PlayerController : NetworkBehaviour
 		inputs = new InputSystem();
 		inputs.InGame.Enable();
 		inputs.InGame.Dash.performed += OnDash;
+		inputs.InGame.Takedrop.performed += TakeDropItem;
 	}
 
 	void OnDestroy()
@@ -124,4 +127,42 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(dashReload);
 		canDash = true;
     }
+
+	void TakeDropItem(InputAction.CallbackContext context)
+	{
+		if (!isHoldingItem)
+			TakeItem();
+		else
+			DropItem();
+	}
+
+	void TakeItem()
+	{
+		if (targetedFurniture == null && targetedItem == null)
+			return;
+
+		if (targetedItem != null)
+		{
+			isHoldingItem = true;
+            holdItem = targetedItem;
+            holdItem.transform.position = holdingPositionTransform.position;
+			holdItem.transform.forward = holdingPositionTransform.forward;
+			holdItem.transform.parent = holdingPositionTransform;
+            holdItem.GetComponent<Collider>().enabled = false;
+			holdItem.GetComponent<Rigidbody>().isKinematic = true;
+            return;
+		}
+	}
+
+	void DropItem()
+	{
+		if (targetedFurniture == null)
+		{
+            isHoldingItem = false;
+            holdItem.transform.parent = null;
+            holdItem.GetComponent<Collider>().enabled = true;
+            holdItem.GetComponent<Rigidbody>().isKinematic = false;
+            holdItem = null;
+        }
+	}
 }
