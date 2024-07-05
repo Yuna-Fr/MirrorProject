@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class RecipeSO : ScriptableObject
 {
 	public string name;
-	public Image image;
+	public Sprite sprite;
 	public List<IngredientSO> ingredients;
 	public float maxTimeToFinish;
 }

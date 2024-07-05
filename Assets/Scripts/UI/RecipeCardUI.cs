@@ -1,8 +1,8 @@
 using DG.Tweening;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class RecipeCardUI : MonoBehaviour
 {
@@ -19,8 +19,7 @@ public class RecipeCardUI : MonoBehaviour
 	[SerializeField] TextMeshProUGUI textRecipe;
 	[SerializeField] Image imageRecipe;
 
-	[SerializeField] Transform ingredientContainer;
-	[SerializeField] Image ingredientPrefab;
+	[SerializeField] List<Transform> ingredientSlots;
 
 	float maxTimeToFinish;
 	float currentFillAmount = 60;
@@ -31,10 +30,10 @@ public class RecipeCardUI : MonoBehaviour
 		maxTimeToFinish = recipe.maxTimeToFinish;
 		currentFillAmount = recipe.maxTimeToFinish;
 
-		if (recipe.image != null)
+		if (recipe.sprite != null)
 		{
 			imageRecipe.gameObject.SetActive(true);
-			imageRecipe = recipe.image;
+			imageRecipe.sprite = recipe.sprite;
 		}
 		else
 		{
@@ -42,9 +41,10 @@ public class RecipeCardUI : MonoBehaviour
 			textRecipe.text = recipe.name;
 		}
 
-		foreach (IngredientSO ingredient in recipe.ingredients)
+		for (int i = 0; i < recipe.ingredients.Count; i++)
 		{
-			Instantiate(ingredientPrefab, ingredientContainer).sprite = ingredient.image;
+			ingredientSlots[i].gameObject.SetActive(true);
+			//ingredientSlots[i].GetComponent<Image>().sprite = recipe.ingredients[i].sprite;
 		}
 
 		canvasGroup.DOFade(1, fadeDuration);

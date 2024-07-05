@@ -1,29 +1,37 @@
-using System.Collections;
+using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class OrderManagerUI : MonoBehaviour
+public class OrderManagerUI : NetworkBehaviour
 {
-    [SerializeField] Transform container;
-    [SerializeField] RecipeCardUI recipeCardPrefab;
+	[SyncVar(hook = nameof(AddCard))]
+	RecipeSO recipe;
+
+	[SerializeField] List<Transform> cardSlots;
 
 	void Start()
 	{
-        OrderManager.OnRecipeAdded += AddCard;
+		OrderManager.OnRecipeAdded += AddNewRecipeToCard;
 	}
 
-    void OnDestroy()
+	void OnDestroy()
 	{
-        OrderManager.OnRecipeAdded -= AddCard;
+		OrderManager.OnRecipeAdded -= AddNewRecipeToCard;
 	}
 
-	public void AddCard(RecipeSO recipe)
-    {
-        Instantiate(recipeCardPrefab, container).SetCard(recipe);
-    }
+	public void AddNewRecipeToCard(RecipeSO recipe)
+	{
+		this.recipe = recipe;
+	}
 
-    public void RemoveCard()
-    {
-
-    }
+	void AddCard(RecipeSO recipeOld, RecipeSO recipe)
+	{
+		RecipeCardUI availableCard = cardSlots.FirstOrDefault(obj => obj.gameObject != null && !obj.gameObject.activeSelf).GetComponent<RecipeCardUI>();
+		if (availableCard != null)
+		{
+			availableCard.gameObject.SetActive(true);
+			availableCard.SetCard(recipe);
+		}
+	}
 }

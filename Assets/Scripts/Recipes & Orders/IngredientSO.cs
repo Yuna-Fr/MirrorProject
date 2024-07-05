@@ -6,5 +6,5 @@ using UnityEngine;
 public class IngredientSO : ScriptableObject
 {
 	[SerializeField] string name;
-	public Sprite image;
+	public Sprite sprite;
 }
