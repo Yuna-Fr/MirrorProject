@@ -23,7 +23,7 @@ public class CustomNetworkManager : NetworkManager
 	{
 		base.OnServerAddPlayer(conn);
 		
-		//if (numPlayers == 2) // replace this with UI and ready button
+		if (numPlayers == 2) // replace this with UI and ready button
 			StartGame.Invoke();
 
 		//Transform spawn = null;

@@ -9,4 +9,5 @@ public class RecipeSO : ScriptableObject
 	public string name;
 	public Image image;
 	public List<IngredientSO> ingredients;
+	public float maxTimeToFinish;
 }

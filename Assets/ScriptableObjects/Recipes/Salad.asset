@@ -17,3 +17,4 @@ MonoBehaviour:
   ingredients:
   - {fileID: 11400000, guid: 82104be32d3bb0b4bb1be32bab0e5a06, type: 2}
   - {fileID: 11400000, guid: 691bef52cd63d384cad4721c7879f17c, type: 2}
+  maxTimeToFinish: 45

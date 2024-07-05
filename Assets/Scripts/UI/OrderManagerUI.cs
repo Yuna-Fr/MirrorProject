@@ -19,8 +19,6 @@ public class OrderManagerUI : MonoBehaviour
 
 	public void AddCard(RecipeSO recipe)
     {
-        if(recipe)
-
         Instantiate(recipeCardPrefab, container).SetCard(recipe);
     }
 
