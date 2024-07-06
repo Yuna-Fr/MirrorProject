@@ -12,6 +12,7 @@ public class RecipeCardUI : MonoBehaviour
 	[SerializeField] Color greenColor = Color.green;
 	[SerializeField] Color yellowColor = Color.yellow;
 	[SerializeField] Color redColor = Color.red;
+	[SerializeField] Color originalCardColor;
 
 	[Header("REFERENCES")]
 	[SerializeField] CanvasGroup canvasGroup;
@@ -34,6 +35,8 @@ public class RecipeCardUI : MonoBehaviour
 		recipeRef = recipe;
 		maxTimeToFinish = recipe.maxTimeToFinish;
 		currentFillAmount = recipe.maxTimeToFinish;
+		cardBackground.color = originalCardColor;
+		timeBar.color = greenColor;
 
 		if (recipe.sprite != null)
 		{

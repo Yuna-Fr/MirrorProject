@@ -716,6 +716,7 @@ MonoBehaviour:
   greenColor: {r: 0.23741534, g: 0.645283, b: 0.23741534, a: 1}
   yellowColor: {r: 0.81886786, g: 0.7618678, b: 0.10351724, a: 1}
   redColor: {r: 0.6830188, g: 0.14304735, b: 0.14304735, a: 1}
+  originalCardColor: {r: 0.5019608, g: 0.4156863, b: 0.24705884, a: 1}
   canvasGroup: {fileID: 87202098346394919}
   cardBackground: {fileID: 3311169798514912736}
   timeBar: {fileID: 5087330696033308160}
