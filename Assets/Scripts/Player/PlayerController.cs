@@ -180,6 +180,7 @@ public class PlayerController : NetworkBehaviour
 		else
 		{
 			Furniture furniture = targetedFurniture.GetComponent<Furniture>();
+
 			if (furniture && furniture.IsAvailable())
 				furniture.GetItemContainer();
 		}
