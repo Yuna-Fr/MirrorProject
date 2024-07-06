@@ -6,6 +6,6 @@ public class RecipeSO : ScriptableObject
 {
 	public string shownName;
 	public Sprite sprite;
-	public List<IngredientSO> ingredients;
+	public List<ItemSO> ingredients;
 	public float maxTimeToFinish;
 }

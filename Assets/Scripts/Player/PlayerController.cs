@@ -22,6 +22,7 @@ public class PlayerController : NetworkBehaviour
     GameObject targetedItem;
 	GameObject targetedFurniture;
 	MeshRenderer fakeItemVisual;
+	MeshFilter fakeItemVisualFilter;
     Vector3 moveDirection;
     Vector2 stickVector;
     bool wasLocalPlayer;
@@ -35,6 +36,7 @@ public class PlayerController : NetworkBehaviour
 	void Start()
 	{
 		fakeItemVisual = fakeItem.GetComponent<MeshRenderer>();
+        fakeItemVisualFilter = fakeItem.GetComponent<MeshFilter>();
 
         if (!isLocalPlayer)
 			return;
@@ -147,15 +149,16 @@ public class PlayerController : NetworkBehaviour
 
 		if (targetedItem != null)
 		{
-			isHoldingItem = true;
+            isHoldingItem = true;
 			RPC_TakeDropItem(targetedItem);
+			if(targetedFurniture == null)
             return;
 		}
 	}
 
 	void DropItem()
 	{
-		if (targetedFurniture == null)
+        if (targetedFurniture == null)
 		{
             isHoldingItem = false;
             RPC_TakeDropItem(null);
@@ -175,7 +178,14 @@ public class PlayerController : NetworkBehaviour
 
 	void Hook_TakeDropItem(GameObject oldValue, GameObject newValue)
 	{
-		fakeItemVisual.enabled = (newValue == null) ? false : true;
+        if (newValue != null)
+		{
+			Item item = newValue.GetComponent<Item>();
+			fakeItemVisual.sharedMaterial = item.GetItemSO().material;
+			fakeItemVisualFilter.sharedMesh = item.GetItemSO().mesh;
+		}
+
+        fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}
 
 }

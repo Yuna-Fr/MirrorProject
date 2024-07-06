@@ -1,14 +1,14 @@
 using UnityEngine;
 
 [CreateAssetMenu()]
-public class IngredientSO : ScriptableObject
+public class ItemSO : ScriptableObject
 {
-	public Ingredients ingredientType;
+	public ItemType itemType;
 	public Sprite sprite;
 	public Mesh mesh;
 	public Material material;
 
-	public enum Ingredients
+	public enum ItemType
 	{
 		None,
 		Bread,
@@ -21,5 +21,6 @@ public class IngredientSO : ScriptableObject
 		SteakBurned,
 		Tomato,
 		TomatoCut,
+		Plate,
 	}
 }

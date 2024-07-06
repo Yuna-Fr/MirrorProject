@@ -94,7 +94,7 @@ public class PlayerDetection : MonoBehaviour
             }
         }
 
-        return detectionBuffer[index].gameObject;
+        return detectionBuffer[index].gameObject.GetComponentInParent<Item>().gameObject;
     }
 
     void DetectGround()

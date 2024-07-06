@@ -5,10 +5,12 @@ using Mirror;
 
 public class Item : NetworkBehaviour
 {
-    IngredientSO.Ingredients ingredient;
-    IngredientSO ingredientSO;
-    Collider collider;
-    MeshRenderer meshRenderer;
+    [SerializeField] MeshRenderer meshRenderer;
+    [SerializeField] MeshFilter meshFilter;
+    [SerializeField] Collider collider;
+
+    ItemSO.ItemType itemType;
+    ItemSO itemSO;
     Rigidbody rigidbody;
 
     [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
@@ -16,14 +18,24 @@ public class Item : NetworkBehaviour
 
     private void Start()
     {
+        SetItem(ItemSO.ItemType.Tomato);
+
         if (isServer)
             rigidbody = gameObject.AddComponent<Rigidbody>();
     }
 
-    public void SetItem(IngredientSO.Ingredients ingredient)
+    public void SetItem(ItemSO.ItemType itemType)
     {
-        this.ingredient = ingredient;
-        Resources.
+        this.itemType = itemType;
+        itemSO = Resources.Load<ItemSO>($"Items/{itemType}");
+        meshRenderer.sharedMaterial = itemSO.material;
+        meshFilter.sharedMesh = itemSO.mesh;
+        ((MeshCollider)collider).sharedMesh = meshFilter.mesh;
+    }
+
+    public ItemSO GetItemSO()
+    {
+        return itemSO;
     }
 
     void Hook_IsTaken(bool oldValue, bool newValue)
