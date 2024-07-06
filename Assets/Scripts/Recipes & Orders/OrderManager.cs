@@ -18,7 +18,6 @@ public class OrderManager : NetworkBehaviour
 	void Start()
 	{
 		CustomNetworkManager.Instance.StartGame += OnStartTimer;
-
 	}
 
 	void OnDestroy()
@@ -31,12 +30,12 @@ public class OrderManager : NetworkBehaviour
 
 	void OnStartTimer()
 	{
-		if (isServer)
-		{
-			RecipeFinished += OnRecipeFinished;
-			waitingRecipes = new();
-			StartCoroutine(Timer());
-		}
+		if (!isServer)
+			return;
+
+		RecipeFinished += OnRecipeFinished;
+		waitingRecipes = new();
+		StartCoroutine(Timer());
 	}
 
 	void OnRecipeFinished(RecipeSO recipe, bool withSuccess)
