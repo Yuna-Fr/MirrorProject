@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class RecipeCardUI : MonoBehaviour
 {
 	[Header("SETTINGS")]
+	[SerializeField] float shakeDuration = 1;
 	[SerializeField] float fadeDuration = 1;
 	[SerializeField] Color greenColor = Color.green;
 	[SerializeField] Color yellowColor = Color.yellow;
@@ -14,6 +15,7 @@ public class RecipeCardUI : MonoBehaviour
 
 	[Header("REFERENCES")]
 	[SerializeField] CanvasGroup canvasGroup;
+	[SerializeField] Image cardBackground;
 
 	[SerializeField] Image timeBar;
 	[SerializeField] TextMeshProUGUI textRecipe;
@@ -21,12 +23,15 @@ public class RecipeCardUI : MonoBehaviour
 
 	[SerializeField] List<Image> ingredientSlots;
 
+	RecipeSO recipeRef = null;
 	float maxTimeToFinish;
 	float currentFillAmount = 60;
+	bool failed = false;
 
 	public void SetCard(RecipeSO recipe)
 	{
 		canvasGroup.alpha = 0;
+		recipeRef = recipe;
 		maxTimeToFinish = recipe.maxTimeToFinish;
 		currentFillAmount = recipe.maxTimeToFinish;
 
@@ -65,7 +70,26 @@ public class RecipeCardUI : MonoBehaviour
 					timeBar.color = yellowColor;
 			}
 		}
-		//else 
-			//Destroy(gameObject);
+		else
+			RecipeFailedEffect();
+	}
+
+	void RecipeFailedEffect()
+	{
+		if (failed == true)
+			return;
+
+		failed = true;
+		cardBackground.DOColor(redColor, shakeDuration / 2);
+		canvasGroup.DOFade(1, fadeDuration);
+		transform.DOShakePosition(shakeDuration)
+			.OnComplete(() => { CloseRecipeCard() });
+	}
+
+	void CloseRecipeCard()
+	{
+		OrderManager.RecipeFinished.Invoke(recipeRef, false);
+		failed = false;
+		gameObject.SetActive(false);
 	}
 }

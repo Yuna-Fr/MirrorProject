@@ -711,11 +711,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c73c3f320e98843924e819313ed6f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shakeDuration: 2
   fadeDuration: 1
   greenColor: {r: 0.23741534, g: 0.645283, b: 0.23741534, a: 1}
   yellowColor: {r: 0.81886786, g: 0.7618678, b: 0.10351724, a: 1}
   redColor: {r: 0.6830188, g: 0.14304735, b: 0.14304735, a: 1}
   canvasGroup: {fileID: 87202098346394919}
+  cardBackground: {fileID: 3311169798514912736}
   timeBar: {fileID: 5087330696033308160}
   textRecipe: {fileID: 2534695068698882139}
   imageRecipe: {fileID: 5228012288635749856}

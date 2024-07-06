@@ -14,13 +14,14 @@ public class OrderManagerUI : NetworkBehaviour
 
 	void Start()
 	{
-		OrderManager.OnRecipeAdded += AddNewRecipeToCard;
+		OrderManager.RecipeAdded += AddNewRecipeToCard;
+
 		LoadAllRecipeSO();
 	}
 
 	void OnDestroy()
 	{
-		OrderManager.OnRecipeAdded -= AddNewRecipeToCard;
+		OrderManager.RecipeAdded -= AddNewRecipeToCard;
 	}
 
 	void AddNewRecipeToCard(RecipeSO recipe)

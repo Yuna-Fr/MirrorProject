@@ -1,12 +1,13 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class OrderManager : MonoBehaviour
+public class OrderManager : NetworkBehaviour
 {
-	public static UnityAction<RecipeSO> OnRecipeAdded;
-	public static UnityAction<Transform> OnRecipeCompleted;
+	public static UnityAction<RecipeSO> RecipeAdded;
+	public static UnityAction<RecipeSO, bool> RecipeFinished;
 
 	[SerializeField] int timerUpdateSec = 4;
 	[SerializeField] int maxwaitingRecipes = 4;
@@ -16,12 +17,21 @@ public class OrderManager : MonoBehaviour
 
 	void Start()
 	{
-		CustomNetworkManager.Instance.StartGame += OnStartTimer;
+		if (isServer)
+		{
+			CustomNetworkManager.Instance.StartGame += OnStartTimer;
+			RecipeFinished += OnRecipeFinished;
+		}
 	}
 
 	void OnDestroy()
 	{
-		CustomNetworkManager.Instance.StartGame -= OnStartTimer;
+		if (isServer)
+		{
+			CustomNetworkManager.Instance.StartGame -= OnStartTimer;
+			RecipeFinished -= OnRecipeFinished;
+		}
+
 	}
 
 	void OnStartTimer()
@@ -29,6 +39,11 @@ public class OrderManager : MonoBehaviour
 		waitingRecipes = new();
 
 		StartCoroutine(Timer());
+	}
+
+	void OnRecipeFinished(RecipeSO recipe, bool withSuccess)
+	{
+		waitingRecipes.Remove(recipe);
 	}
 
 	void LaunchNewRecipe()
@@ -40,7 +55,7 @@ public class OrderManager : MonoBehaviour
 		{
 			var newRecipe = recipes[Random.Range(0, recipes.Count)];
 			waitingRecipes.Add(newRecipe);
-			OnRecipeAdded.Invoke(newRecipe);
+			RecipeAdded.Invoke(newRecipe);
 		}
 
 		StartCoroutine(Timer());
@@ -52,23 +67,23 @@ public class OrderManager : MonoBehaviour
 		LaunchNewRecipe();
 	}
 
-	public void DeliveryCheck(string plate)//add real paramater
-	{
-		//foreach (RecipeSO recipe in waitingRecipes)
-		//{
-		//	if (recipe.ingredients.Count == plate.ingredients.Count)
-		//	{
-		//		foreach (IngredientSO ingredient in recipe.ingredients)
-		//		{
-		//			if (!plate.ingredients.Contains(ingredient))
-		//			{
-		//				Debug.Log($"the {ingredient} was not found on the plate !");
-		//				break;
-		//			}
-		//		}
+	//public void DeliveryCheck(string plate)//add real paramater
+	//{
+	//foreach (RecipeSO recipe in waitingRecipes)
+	//{
+	//	if (recipe.ingredients.Count == plate.ingredients.Count)
+	//	{
+	//		foreach (IngredientSO ingredient in recipe.ingredients)
+	//		{
+	//			if (!plate.ingredients.Contains(ingredient))
+	//			{
+	//				Debug.Log($"the {ingredient} was not found on the plate !");
+	//				break;
+	//			}
+	//		}
 
 
-		//	}
-		//}
-	}
+	//	}
+	//}
+	//}
 }
