@@ -29,6 +29,7 @@ public class PlayerDetection : MonoBehaviour
     PlayerController playerController;
     Collider[] detectionBuffer;
     RaycastHit furnitureHitInfo;
+    RaycastHit groundHitInfo;
     Color itemGizmosColor;
     Color furnitureGizmosColor;
 
@@ -99,7 +100,15 @@ public class PlayerDetection : MonoBehaviour
 
     void DetectGround()
     {
-
+        if (Physics.Raycast(transform.position, transform.up * (-1.0f), out groundHitInfo, groundRayLength, groundLayer, QueryTriggerInteraction.Ignore))
+        {
+            if (groundHitInfo.distance > 0.01f)
+                playerController.SetGroundedState(false);
+            else
+                playerController.SetGroundedState(true);
+        }
+        else
+            playerController.SetGroundedState(false);
     }
 
     private void OnDrawGizmos()

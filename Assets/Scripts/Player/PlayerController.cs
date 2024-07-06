@@ -8,6 +8,7 @@ public class PlayerController : NetworkBehaviour
 {
 	[Header("MOVEMENTS")]
 	[SerializeField] float speed = 5.0f;
+	[SerializeField] float fallSpeed = 5.0f;
 	[SerializeField] float stickThreshold = 0.05f;
     [SerializeField] float dashLength = 2.5f;
 	[SerializeField] float dashReload = 0.3f;
@@ -102,11 +103,19 @@ public class PlayerController : NetworkBehaviour
 
 		if (moveDirection != Vector3.zero)
 			Rotate();
+
+        if (!onGround)
+            ApplyGravity();
     }
 
 	void Rotate()
 	{
 		transform.forward = Vector3.Slerp(transform.forward, moveDirection.normalized, rotationSpeed * Time.deltaTime);
+    }
+
+	void ApplyGravity()
+	{
+		characterController.Move(transform.up * (-1.0f) * fallSpeed * Time.deltaTime);
     }
 
 	void OnDash(InputAction.CallbackContext context)
