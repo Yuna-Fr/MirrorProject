@@ -160,7 +160,7 @@ public class PlayerController : NetworkBehaviour
             RPC_SetTakenItemPosition(fakeItem.transform.position, fakeItem.transform.rotation);
             RPC_SetFakeItemVisual(false);
             RPC_TakeItem(false);
-			//RPC_SetTakenItem(null);
+			RPC_SetTakenItem(null);
         }
 	}
 
@@ -186,8 +186,7 @@ public class PlayerController : NetworkBehaviour
 
     [Command] void RPC_SetTakenItemPosition(Vector3 position, Quaternion rotation)
 	{
-		takenItem.transform.position = position;
-		takenItem.transform.rotation = rotation;
+		takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(position, rotation);
 	}
 
 }

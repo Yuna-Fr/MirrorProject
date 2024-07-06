@@ -9,7 +9,7 @@ public class Item : NetworkBehaviour
     MeshRenderer meshRenderer;
     Rigidbody rigidbody;
 
-    [SyncVar(hook = nameof(IsTaken))] public bool isTaken = false;
+    [SyncVar(hook = nameof(IsTaken)), HideInInspector] public bool isTaken = false;
 
 
     private void Start()

@@ -12,7 +12,11 @@ public class PlayerDetection : MonoBehaviour
 
     [Header("FURNITURE DETECTION")]
     [SerializeField] LayerMask furnitureLayer;
-    [SerializeField] float rayLength;
+    [SerializeField] float furnitureRayLength = 1.3f;
+
+    [Header("GROUND DETECTION")]
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] float groundRayLength = 0.3f;
 
     [Header("GIZMOS")]
     [SerializeField] bool drawGizmos = false;
@@ -40,11 +44,12 @@ public class PlayerDetection : MonoBehaviour
             DetectItem();
 
         DetectFurniture();
+        DetectGround();
     }
 
     void DetectFurniture()
     {
-        if (Physics.Raycast(transform.position, transform.forward, out furnitureHitInfo, rayLength, furnitureLayer, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position, transform.forward, out furnitureHitInfo, furnitureRayLength, furnitureLayer, QueryTriggerInteraction.Ignore))
         {
             furnitureGizmosColor = onFurnitureHitColor;
             playerController.SetNewTargetedFurnitures(furnitureHitInfo.transform.gameObject);
@@ -92,6 +97,11 @@ public class PlayerDetection : MonoBehaviour
         return detectionBuffer[index].gameObject;
     }
 
+    void DetectGround()
+    {
+
+    }
+
     private void OnDrawGizmos()
     {
         if (!drawGizmos || drawIfSelected)
@@ -116,7 +126,7 @@ public class PlayerDetection : MonoBehaviour
         else
             Gizmos.color = furnitureGizmosColor;
 
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * rayLength);
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * furnitureRayLength);
     }
 
     private void OnDrawGizmosSelected()
@@ -143,7 +153,7 @@ public class PlayerDetection : MonoBehaviour
         else
             Gizmos.color = furnitureGizmosColor;
 
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * rayLength);
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * furnitureRayLength);
     }
 
 }
