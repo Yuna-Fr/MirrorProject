@@ -15,12 +15,11 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] float rotationSpeed = 15.0f;
 
 	[Header("INTERACTIONS")]
-	[SerializeField] Transform holdingPositionTransform;
+	[SerializeField] GameObject fakeItem;
 
     InputSystem inputs;
     CharacterController characterController;
     GameObject targetedItem;
-	GameObject holdItem;
 	GameObject targetedFurniture;
     Vector3 moveDirection;
     Vector2 stickVector;
@@ -29,12 +28,14 @@ public class PlayerController : NetworkBehaviour
 	bool isDashing = false;
 	bool isHoldingItem = false;
 
+	//For Network
+	[SyncVar] GameObject takenItem;
+	[SyncVar(hook = nameof(SetFakeItemVisual))] bool isFakeItemVisible = false;
+
 	void Start()
 	{
         if (!isLocalPlayer)
-		{
-				
-        }
+			return;
 
 		wasLocalPlayer = true;
         characterController = GetComponent<CharacterController>();
@@ -144,12 +145,9 @@ public class PlayerController : NetworkBehaviour
 		if (targetedItem != null)
 		{
 			isHoldingItem = true;
-            holdItem = targetedItem;
-            holdItem.transform.position = holdingPositionTransform.position;
-			holdItem.transform.forward = holdingPositionTransform.forward;
-			holdItem.transform.parent = holdingPositionTransform;
-            holdItem.GetComponent<Collider>().enabled = false;
-			holdItem.GetComponent<Rigidbody>().isKinematic = true;
+			RPC_SetTakenItem(targetedItem);
+			RPC_TakeItem(true);
+            RPC_SetFakeItemVisual(true);
             return;
 		}
 	}
@@ -159,10 +157,37 @@ public class PlayerController : NetworkBehaviour
 		if (targetedFurniture == null)
 		{
             isHoldingItem = false;
-            holdItem.transform.parent = null;
-            holdItem.GetComponent<Collider>().enabled = true;
-            holdItem.GetComponent<Rigidbody>().isKinematic = false;
-            holdItem = null;
+            RPC_SetTakenItemPosition(fakeItem.transform.position, fakeItem.transform.rotation);
+            RPC_SetFakeItemVisual(false);
+            RPC_TakeItem(false);
+			//RPC_SetTakenItem(null);
         }
 	}
+
+	void SetFakeItemVisual(bool oldValue, bool newValue)
+	{
+		fakeItem.GetComponent<MeshRenderer>().enabled = newValue;
+	}
+
+	[Command] void RPC_SetTakenItem(GameObject takenItem)
+	{
+		this.takenItem = takenItem;
+	}
+
+    [Command] void RPC_TakeItem(bool isTaken)
+	{
+		takenItem.GetComponent<Item>().isTaken = isTaken;
+	}
+
+	[Command] void RPC_SetFakeItemVisual(bool isVisible)
+	{
+		isFakeItemVisible = isVisible;
+	}
+
+    [Command] void RPC_SetTakenItemPosition(Vector3 position, Quaternion rotation)
+	{
+		takenItem.transform.position = position;
+		takenItem.transform.rotation = rotation;
+	}
+
 }
