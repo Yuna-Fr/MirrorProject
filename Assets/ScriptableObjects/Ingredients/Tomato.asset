@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cebf238e0e9b5a45aec6459a3961bed, type: 3}
   m_Name: Tomato
   m_EditorClassIdentifier: 
-  name: Tomato
+  ingredientType: 9
   sprite: {fileID: 21300000, guid: 91e8fe3de9249fc44b7bdd8050062896, type: 3}

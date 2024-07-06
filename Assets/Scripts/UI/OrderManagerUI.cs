@@ -23,19 +23,7 @@ public class OrderManagerUI : NetworkBehaviour
 		OrderManager.OnRecipeAdded -= AddNewRecipeToCard;
 	}
 
-	private void LoadAllRecipeSO()
-	{
-		RecipeSO[] recipes = Resources.LoadAll<RecipeSO>("Recipes");
-		foreach (var recipe in recipes)
-		{
-			if (!recipeSODictionary.ContainsKey(recipe.shownName))
-			{
-				recipeSODictionary[recipe.shownName] = recipe;
-			}
-		}
-	}
-
-	public void AddNewRecipeToCard(RecipeSO recipe)
+	void AddNewRecipeToCard(RecipeSO recipe)
 	{
 		recipeName = recipe.shownName;
 	}
@@ -58,6 +46,18 @@ public class OrderManagerUI : NetworkBehaviour
 		else
 		{
 			Debug.LogWarning("No available card slot found");
+		}
+	}
+
+	void LoadAllRecipeSO()
+	{
+		RecipeSO[] recipes = Resources.LoadAll<RecipeSO>("Recipes");
+		foreach (var recipe in recipes)
+		{
+			if (!recipeSODictionary.ContainsKey(recipe.shownName))
+			{
+				recipeSODictionary[recipe.shownName] = recipe;
+			}
 		}
 	}
 
