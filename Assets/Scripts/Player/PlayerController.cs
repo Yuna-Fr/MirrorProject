@@ -26,6 +26,7 @@ public class PlayerController : NetworkBehaviour
     Vector3 moveDirection;
     Vector2 stickVector;
     bool wasLocalPlayer;
+	bool onGround = true;
     bool canDash = true;
 	bool isDashing = false;
 	bool isHoldingItem = false;
@@ -76,6 +77,11 @@ public class PlayerController : NetworkBehaviour
 	public void SetNewTargetedFurnitures(GameObject targetedFurniture)
 	{
 		this.targetedFurniture = targetedFurniture;
+	}
+
+	public void SetGroundedState(bool isGrounded)
+	{
+		onGround = isGrounded;
 	}
 
 	public bool IsHoldingItem()
