@@ -177,6 +177,12 @@ public class PlayerController : NetworkBehaviour
             isHoldingItem = false;
             RPC_TakeDropItem(null);
         }
+		else
+		{
+			Furniture furniture = targetedFurniture.GetComponent<Furniture>();
+			if (furniture && furniture.IsAvailable())
+				furniture.GetItemContainer();
+		}
 	}
 
     [Command] void RPC_TakeDropItem(GameObject item)
