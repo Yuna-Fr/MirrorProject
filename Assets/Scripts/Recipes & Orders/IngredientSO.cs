@@ -5,6 +5,8 @@ public class IngredientSO : ScriptableObject
 {
 	public Ingredients ingredientType;
 	public Sprite sprite;
+	public Mesh mesh;
+	public Material material;
 
 	public enum Ingredients
 	{

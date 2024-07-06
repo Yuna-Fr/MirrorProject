@@ -5,6 +5,8 @@ using Mirror;
 
 public class Item : NetworkBehaviour
 {
+    IngredientSO.Ingredients ingredient;
+    IngredientSO ingredientSO;
     Collider collider;
     MeshRenderer meshRenderer;
     Rigidbody rigidbody;
@@ -14,11 +16,14 @@ public class Item : NetworkBehaviour
 
     private void Start()
     {
-        collider = GetComponent<Collider>();
-        meshRenderer = GetComponent<MeshRenderer>();
-
         if (isServer)
             rigidbody = gameObject.AddComponent<Rigidbody>();
+    }
+
+    public void SetItem(IngredientSO.Ingredients ingredient)
+    {
+        this.ingredient = ingredient;
+        Resources.
     }
 
     void Hook_IsTaken(bool oldValue, bool newValue)
