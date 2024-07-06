@@ -83,7 +83,7 @@ public class RecipeCardUI : MonoBehaviour
 		cardBackground.DOColor(redColor, shakeDuration / 2);
 		canvasGroup.DOFade(1, fadeDuration);
 		transform.DOShakePosition(shakeDuration)
-			.OnComplete(() => { CloseRecipeCard() });
+			.OnComplete(() => { CloseRecipeCard(); });
 	}
 
 	void CloseRecipeCard()

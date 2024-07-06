@@ -17,28 +17,26 @@ public class OrderManager : NetworkBehaviour
 
 	void Start()
 	{
-		if (isServer)
-		{
-			CustomNetworkManager.Instance.StartGame += OnStartTimer;
-			RecipeFinished += OnRecipeFinished;
-		}
+		CustomNetworkManager.Instance.StartGame += OnStartTimer;
+
 	}
 
 	void OnDestroy()
 	{
 		if (isServer)
-		{
-			CustomNetworkManager.Instance.StartGame -= OnStartTimer;
 			RecipeFinished -= OnRecipeFinished;
-		}
 
+		CustomNetworkManager.Instance.StartGame -= OnStartTimer;
 	}
 
 	void OnStartTimer()
 	{
-		waitingRecipes = new();
-
-		StartCoroutine(Timer());
+		if (isServer)
+		{
+			RecipeFinished += OnRecipeFinished;
+			waitingRecipes = new();
+			StartCoroutine(Timer());
+		}
 	}
 
 	void OnRecipeFinished(RecipeSO recipe, bool withSuccess)
