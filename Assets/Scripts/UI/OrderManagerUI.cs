@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class OrderManagerUI : NetworkBehaviour
 {
-	[SyncVar(hook = nameof(AddCard))]
+	[SyncVar(hook = nameof(Hook_AddCard))]
 	string recipeName;
 
 	[SerializeField] List<Transform> cardSlots;
@@ -29,7 +29,7 @@ public class OrderManagerUI : NetworkBehaviour
 		recipeName = recipe.shownName;
 	}
 
-	void AddCard(string recipeOld, string recipe)
+	void Hook_AddCard(string recipeOld, string recipe)
 	{
 		RecipeCardUI availableCard = null;
 		Transform availableTransform = cardSlots.FirstOrDefault(obj => obj != null && !obj.gameObject.activeSelf);

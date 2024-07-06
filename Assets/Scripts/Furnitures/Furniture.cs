@@ -1,16 +1,15 @@
 using UnityEngine;
-using static IngredientSO;
 
 public class Furniture : MonoBehaviour
 {
+	public GameObject itemContained = null;
+
 	[SerializeField] bool neverAvailable = false;
 	[SerializeField] Transform itemContainer;
 
-	Ingredients itemContained = Ingredients.None;
-
 	public bool IsAvailable()
 	{
-		if (!neverAvailable || itemContained != Ingredients.None)
+		if (!neverAvailable || itemContained != null)
 			return false;
 
 		return true;
@@ -23,4 +22,5 @@ public class Furniture : MonoBehaviour
 
 		return null;
 	}
+
 }
