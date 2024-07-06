@@ -1,6 +1,7 @@
+using Mirror;
 using UnityEngine;
 
-public class Furniture : MonoBehaviour
+public class Furniture : NetworkBehaviour
 {
 	public GameObject itemContained = null;
 
