@@ -19,7 +19,7 @@ public class RecipeCardUI : MonoBehaviour
 	[SerializeField] TextMeshProUGUI textRecipe;
 	[SerializeField] Image imageRecipe;
 
-	[SerializeField] List<Transform> ingredientSlots;
+	[SerializeField] List<Image> ingredientSlots;
 
 	float maxTimeToFinish;
 	float currentFillAmount = 60;
@@ -38,13 +38,13 @@ public class RecipeCardUI : MonoBehaviour
 		else
 		{
 			textRecipe.gameObject.SetActive(true);
-			textRecipe.text = recipe.name;
+			textRecipe.text = recipe.shownName;
 		}
 
 		for (int i = 0; i < recipe.ingredients.Count; i++)
 		{
 			ingredientSlots[i].gameObject.SetActive(true);
-			//ingredientSlots[i].GetComponent<Image>().sprite = recipe.ingredients[i].sprite;
+			ingredientSlots[i].sprite = recipe.ingredients[i].sprite;
 		}
 
 		canvasGroup.DOFade(1, fadeDuration);

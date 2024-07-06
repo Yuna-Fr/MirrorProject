@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3e7eb9718a3499468be45fd7e8af309, type: 3}
-  m_Name: BurgerVegan
+  m_Name: R_BurgerVegan
   m_EditorClassIdentifier: 
-  name: Vegan Burger
-  image: {fileID: 0}
+  shownName: Vegan Burger
+  sprite: {fileID: 0}
   ingredients:
   - {fileID: 11400000, guid: 092148cdab6453540b7cd4624abaad01, type: 2}
   - {fileID: 11400000, guid: 82104be32d3bb0b4bb1be32bab0e5a06, type: 2}

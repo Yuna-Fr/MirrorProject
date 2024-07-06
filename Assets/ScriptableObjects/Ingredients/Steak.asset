@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cebf238e0e9b5a45aec6459a3961bed, type: 3}
   m_Name: Steak
   m_EditorClassIdentifier: 
-  name: Steack
+  shownName: Stea
   sprite: {fileID: 21300000, guid: aa1bacc24dde76e47b2ec0dd4e82385b, type: 3}
