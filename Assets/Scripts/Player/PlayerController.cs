@@ -21,6 +21,7 @@ public class PlayerController : NetworkBehaviour
     CharacterController characterController;
     GameObject targetedItem;
 	GameObject targetedFurniture;
+	MeshRenderer fakeItemVisual;
     Vector3 moveDirection;
     Vector2 stickVector;
     bool wasLocalPlayer;
@@ -29,11 +30,12 @@ public class PlayerController : NetworkBehaviour
 	bool isHoldingItem = false;
 
 	//For Network
-	[SyncVar] GameObject takenItem;
-	[SyncVar(hook = nameof(SetFakeItemVisual))] bool isFakeItemVisible = false;
+	[SyncVar(hook = nameof(Hook_TakeDropItem))] GameObject takenItem;
 
 	void Start()
 	{
+		fakeItemVisual = fakeItem.GetComponent<MeshRenderer>();
+
         if (!isLocalPlayer)
 			return;
 
@@ -52,8 +54,9 @@ public class PlayerController : NetworkBehaviour
 			return;
 
         inputs.InGame.Interact.performed -= OnDash;
+		inputs.InGame.Takedrop.performed -= TakeDropItem;
 		inputs.InGame.Disable();
-	}
+    }
 
 	void Update()
 	{
@@ -145,9 +148,7 @@ public class PlayerController : NetworkBehaviour
 		if (targetedItem != null)
 		{
 			isHoldingItem = true;
-			RPC_SetTakenItem(targetedItem);
-			RPC_TakeItem(true);
-            RPC_SetFakeItemVisual(true);
+			RPC_TakeDropItem(targetedItem);
             return;
 		}
 	}
@@ -157,36 +158,24 @@ public class PlayerController : NetworkBehaviour
 		if (targetedFurniture == null)
 		{
             isHoldingItem = false;
-            RPC_SetTakenItemPosition(fakeItem.transform.position, fakeItem.transform.rotation);
-            RPC_SetFakeItemVisual(false);
-            RPC_TakeItem(false);
-			RPC_SetTakenItem(null);
+            RPC_TakeDropItem(null);
         }
 	}
 
-	void SetFakeItemVisual(bool oldValue, bool newValue)
+    [Command] void RPC_TakeDropItem(GameObject item)
 	{
-		fakeItem.GetComponent<MeshRenderer>().enabled = newValue;
-	}
+        if (item == null)
+            takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(fakeItem.transform.position, fakeItem.transform.rotation);
 
-	[Command] void RPC_SetTakenItem(GameObject takenItem)
-	{
-		this.takenItem = takenItem;
-	}
+        if (item != null) item.GetComponent<Item>().isTaken = true;
+        else if (takenItem != null) takenItem.GetComponent<Item>().isTaken = false;
 
-    [Command] void RPC_TakeItem(bool isTaken)
-	{
-		takenItem.GetComponent<Item>().isTaken = isTaken;
-	}
+        takenItem = item;
+    }
 
-	[Command] void RPC_SetFakeItemVisual(bool isVisible)
+	void Hook_TakeDropItem(GameObject oldValue, GameObject newValue)
 	{
-		isFakeItemVisible = isVisible;
-	}
-
-    [Command] void RPC_SetTakenItemPosition(Vector3 position, Quaternion rotation)
-	{
-		takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(position, rotation);
+		fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}
 
 }

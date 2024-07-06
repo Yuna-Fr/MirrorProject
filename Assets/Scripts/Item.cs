@@ -9,7 +9,7 @@ public class Item : NetworkBehaviour
     MeshRenderer meshRenderer;
     Rigidbody rigidbody;
 
-    [SyncVar(hook = nameof(IsTaken)), HideInInspector] public bool isTaken = false;
+    [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
 
 
     private void Start()
@@ -21,7 +21,7 @@ public class Item : NetworkBehaviour
             rigidbody = gameObject.AddComponent<Rigidbody>();
     }
 
-    void IsTaken(bool oldValue, bool newValue)
+    void Hook_IsTaken(bool oldValue, bool newValue)
     {
         collider.enabled = !newValue;
         meshRenderer.enabled = !newValue;
