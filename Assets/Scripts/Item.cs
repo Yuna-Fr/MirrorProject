@@ -9,17 +9,14 @@ public class Item : NetworkBehaviour
     [SerializeField] MeshFilter meshFilter;
     [SerializeField] Collider collider;
 
-    ItemSO.ItemType itemType;
     ItemSO itemSO;
     Rigidbody rigidbody;
 
     [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
-
+    [SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public ItemSO.ItemType itemType;
 
     private void Start()
     {
-        SetItem(ItemSO.ItemType.Tomato);
-
         if (isServer)
             rigidbody = gameObject.AddComponent<Rigidbody>();
     }
@@ -30,7 +27,7 @@ public class Item : NetworkBehaviour
         itemSO = Resources.Load<ItemSO>($"Items/{itemType}");
         meshRenderer.sharedMaterial = itemSO.material;
         meshFilter.sharedMesh = itemSO.mesh;
-        ((MeshCollider)collider).sharedMesh = meshFilter.mesh;
+        (collider as MeshCollider).sharedMesh = meshFilter.mesh;
     }
 
     public ItemSO GetItemSO()
@@ -45,5 +42,10 @@ public class Item : NetworkBehaviour
 
         if (isServer)
             rigidbody.isKinematic = newValue;
+    }
+
+    void Hook_SetItem(ItemSO.ItemType oldValue, ItemSO.ItemType newValue)
+    {
+        SetItem(newValue);
     }
 }

@@ -30,7 +30,6 @@ public class PlayerController : NetworkBehaviour
 	bool isDashing = false;
 	bool isHoldingItem = false;
 
-	//For Network
 	[SyncVar(hook = nameof(Hook_TakeDropItem))] GameObject takenItem;
 
 	void Start()
