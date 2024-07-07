@@ -330,10 +330,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  plateScript: {fileID: 361841390937863119}
   meshRenderer: {fileID: 3019326741532310066}
   meshFilter: {fileID: 5336550314263005672}
   collider: {fileID: 5915335243121615541}
-  plateScript: {fileID: 361841390937863119}
   isTaken: 0
   itemType: 0
 --- !u!114 &361841390937863119
@@ -343,16 +343,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2244705969791887243}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc4559c979aaf7646b9c5da666fd670d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   completeVisual: {fileID: 8905973500291440692}
   bread: {fileID: 5724726850482698754}
-  cheese: {fileID: 5724726849828063514}
-  salad: {fileID: 5724726850069089998}
-  tomato: {fileID: 5724726850748949632}
+  cheese: {fileID: 5724726850069089998}
+  salad: {fileID: 5724726850748949632}
+  tomato: {fileID: 5724726849828063514}
 --- !u!114 &6322561279593480983
 MonoBehaviour:
   m_ObjectHideFlags: 0

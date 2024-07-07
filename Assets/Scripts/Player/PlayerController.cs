@@ -1,5 +1,4 @@
 using Mirror;
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,25 +9,26 @@ public class PlayerController : NetworkBehaviour
 	[SerializeField] float speed = 5.0f;
 	[SerializeField] float fallSpeed = 5.0f;
 	[SerializeField] float stickThreshold = 0.05f;
-    [SerializeField] float dashLength = 2.5f;
+	[SerializeField] float dashLength = 2.5f;
 	[SerializeField] float dashReload = 0.3f;
 	[SerializeField] float dashSpeed = 50.0f;
-    [SerializeField] float rotationSpeed = 15.0f;
+	[SerializeField] float rotationSpeed = 15.0f;
 
 	[Header("INTERACTIONS")]
 	[SerializeField] GameObject fakeItem;
 
-    InputSystem inputs;
-    CharacterController characterController;
-    GameObject targetedItem;
+	InputSystem inputs;
+	CharacterController characterController;
+	GameObject targetedItem;
 	GameObject targetedFurniture;
 	MeshRenderer fakeItemVisual;
 	MeshFilter fakeItemVisualFilter;
-    Vector3 moveDirection;
-    Vector2 stickVector;
-    bool wasLocalPlayer;
+	Plate fakePlate;
+	Vector3 moveDirection;
+	Vector2 stickVector;
+	bool wasLocalPlayer;
 	bool onGround = true;
-    bool canDash = true;
+	bool canDash = true;
 	bool isDashing = false;
 	bool isHoldingItem = false;
 	bool isHoldingPlate = false;
@@ -38,13 +38,14 @@ public class PlayerController : NetworkBehaviour
 	void Start()
 	{
 		fakeItemVisual = fakeItem.GetComponent<MeshRenderer>();
-        fakeItemVisualFilter = fakeItem.GetComponent<MeshFilter>();
+		fakeItemVisualFilter = fakeItem.GetComponent<MeshFilter>();
+		fakePlate = fakeItem.GetComponent<Plate>();
 
-        if (!isLocalPlayer)
+		if (!isLocalPlayer)
 			return;
 
 		wasLocalPlayer = true;
-        characterController = GetComponent<CharacterController>();
+		characterController = GetComponent<CharacterController>();
 
 		inputs = new InputSystem();
 		inputs.InGame.Enable();
@@ -57,10 +58,10 @@ public class PlayerController : NetworkBehaviour
 		if (!wasLocalPlayer)
 			return;
 
-        inputs.InGame.Interact.performed -= OnDash;
+		inputs.InGame.Interact.performed -= OnDash;
 		inputs.InGame.Takedrop.performed -= TakeDropItem;
 		inputs.InGame.Disable();
-    }
+	}
 
 	void Update()
 	{
@@ -91,38 +92,38 @@ public class PlayerController : NetworkBehaviour
 		return isHoldingItem;
 	}
 
-    public bool IsHoldingPlate()
-    {
-        return isHoldingPlate;
-    }
+	public bool IsHoldingPlate()
+	{
+		return isHoldingPlate;
+	}
 
 	public void SetIsHoldingItem(bool isHoldingItem)
 	{
 		this.isHoldingItem = isHoldingItem;
 	}
 
-    public void SetIsHoldingPlate(bool isHoldingPlate)
-    {
-        this.isHoldingPlate = isHoldingPlate;
-    }
+	public void SetIsHoldingPlate(bool isHoldingPlate)
+	{
+		this.isHoldingPlate = isHoldingPlate;
+	}
 
-    public void TakeDropItemFromClearCounter(GameObject droppedItem)
+	public void TakeDropItemFromClearCounter(GameObject droppedItem)
 	{
 		if (droppedItem == null)
-            isHoldingItem = isHoldingPlate = false;
+			isHoldingItem = isHoldingPlate = false;
 		else
 		{
 			isHoldingItem = true;
 			isHoldingPlate = (droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
-        }
+		}
 
-        RPC_TakeDropItem(droppedItem, true);
-    }
+		RPC_TakeDropItem(droppedItem, true);
+	}
 
 	public void TakeItemFromPantry(GameObject pantryItem)
 	{
 		takenItem = pantryItem;
-    }
+	}
 
 	public GameObject DropItemOnDeliveryTable()
 	{
@@ -134,31 +135,31 @@ public class PlayerController : NetworkBehaviour
 	#region Movements
 	void Move()
 	{
-        stickVector = inputs.InGame.Move.ReadValue<Vector2>();
+		stickVector = inputs.InGame.Move.ReadValue<Vector2>();
 
-        if (Mathf.Abs(stickVector.x) < stickThreshold && Mathf.Abs(stickVector.y) < stickThreshold)
-            moveDirection = Vector3.zero;
-        else
-            moveDirection = new(stickVector.x, 0.0f, stickVector.y);
+		if (Mathf.Abs(stickVector.x) < stickThreshold && Mathf.Abs(stickVector.y) < stickThreshold)
+			moveDirection = Vector3.zero;
+		else
+			moveDirection = new(stickVector.x, 0.0f, stickVector.y);
 
 		characterController.Move(moveDirection * speed * Time.deltaTime);
 
 		if (moveDirection != Vector3.zero)
 			Rotate();
 
-        if (!onGround)
-            ApplyGravity();
-    }
+		if (!onGround)
+			ApplyGravity();
+	}
 
 	void Rotate()
 	{
 		transform.forward = Vector3.Slerp(transform.forward, moveDirection.normalized, rotationSpeed * Time.deltaTime);
-    }
+	}
 
 	void ApplyGravity()
 	{
 		characterController.Move(transform.up * (-1.0f) * fallSpeed * Time.deltaTime);
-    }
+	}
 
 	void OnDash(InputAction.CallbackContext context)
 	{
@@ -174,21 +175,21 @@ public class PlayerController : NetworkBehaviour
 
 	IEnumerator Dash(Vector3 destination)
 	{
-        while ((transform.position - destination).magnitude >= 0.1f)
+		while ((transform.position - destination).magnitude >= 0.1f)
 		{
 			transform.position = Vector3.Lerp(transform.position, destination, dashSpeed * Time.deltaTime);
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
 
 		isDashing = false;
-        yield return null;
+		yield return null;
 	}
 
 	IEnumerator ReloadDash()
 	{
-        yield return new WaitForSeconds(dashReload);
+		yield return new WaitForSeconds(dashReload);
 		canDash = true;
-    }
+	}
 	#endregion
 
 	#region ItemGestion
@@ -200,7 +201,7 @@ public class PlayerController : NetworkBehaviour
 			DropItem();
 		else if (isHoldingItem && isHoldingPlate)
 			TakeDropWithPlate();
-    }
+	}
 
 	void TakeItem()
 	{
@@ -209,11 +210,11 @@ public class PlayerController : NetworkBehaviour
 
 		if (targetedItem != null)
 		{
-            isHoldingItem = true;
+			isHoldingItem = true;
 			isHoldingPlate = (targetedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
-            RPC_TakeDropItem(targetedItem, false);
-			if(targetedFurniture == null)
-            return;
+			RPC_TakeDropItem(targetedItem, false);
+			if (targetedFurniture == null)
+				return;
 		}
 
 		if (targetedFurniture != null)
@@ -222,14 +223,14 @@ public class PlayerController : NetworkBehaviour
 
 	void DropItem()
 	{
-        if (targetedFurniture == null)
+		if (targetedFurniture == null)
 		{
-            isHoldingItem = false;
-            isHoldingPlate = false;
-            RPC_TakeDropItem(null, false);
-        }
+			isHoldingItem = false;
+			isHoldingPlate = false;
+			RPC_TakeDropItem(null, false);
+		}
 		else
-            targetedFurniture.GetComponent<Furniture>().OnAction1(this);
+			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
 	}
 
 	void RemoveTakeItem()
@@ -245,30 +246,40 @@ public class PlayerController : NetworkBehaviour
 			return;
 		}
 		else
-            DropItem();
-    }
+			DropItem();
+	}
 
-    [Command] void RPC_TakeDropItem(GameObject item, bool isFromFurniture)
+	[Command]
+	void RPC_TakeDropItem(GameObject item, bool isFromFurniture)
 	{
-        if (item == null && !isFromFurniture)
-            takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(fakeItem.transform.position, fakeItem.transform.rotation);
+		if (item == null && !isFromFurniture)
+			takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(fakeItem.transform.position, fakeItem.transform.rotation);
 
-        if (item != null) item.GetComponent<Item>().isTaken = true;
-        else if (takenItem != null && !isFromFurniture) takenItem.GetComponent<Item>().isTaken = false;
+		if (item != null) item.GetComponent<Item>().isTaken = true;
+		else if (takenItem != null && !isFromFurniture) takenItem.GetComponent<Item>().isTaken = false;
 
-        takenItem = item;
-    }
+		takenItem = item;
+	}
 
 	void Hook_TakeDropItem(GameObject oldValue, GameObject newValue)
 	{
-        if (newValue != null)
+		if (newValue != null)
 		{
 			Item item = newValue.GetComponent<Item>();
 			fakeItemVisual.sharedMaterial = item.GetItemSO().material;
 			fakeItemVisualFilter.sharedMesh = item.GetItemSO().mesh;
+
+			if (IsHoldingPlate())
+				fakePlate.TryAddItemOnPlate(item);
+
+			else if (item.itemType == ItemSO.ItemType.Plate)
+				fakePlate.SetItemsVisuals(item.plateScript.GetItemsList());
+
+			else if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
+				fakePlate.Reset();
 		}
 
-        fakeItemVisual.enabled = (newValue == null) ? false : true;
+		fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}
 	#endregion
 }

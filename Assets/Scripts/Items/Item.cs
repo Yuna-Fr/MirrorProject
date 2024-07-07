@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class Item : NetworkBehaviour
 {
+	public Plate plateScript;
+
 	[SerializeField] MeshRenderer meshRenderer;
 	[SerializeField] MeshFilter meshFilter;
 	[SerializeField] Collider collider;
-	[SerializeField] Plate plateScript;
 
     ItemSO itemSO;
     Rigidbody rigidBody;
@@ -34,7 +35,7 @@ public class Item : NetworkBehaviour
 		if (itemType == ItemSO.ItemType.Plate)
 		{
 			plateScript.enabled = true;
-			plateScript.ShowVisuals(true);
+			plateScript.SetItemsVisuals(plateScript.GetItemsList()); //just set active all plate and desactivate instead ?
 		}
 		else if (plateScript.enabled)
 		{

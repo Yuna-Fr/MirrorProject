@@ -15,21 +15,16 @@ public class Plate : MonoBehaviour
 	public void Reset()
 	{
 		items.Clear();
+		completeVisual.SetActive(false);
 		bread.SetActive(false);
 		cheese.SetActive(false);
 		salad.SetActive(false);
 		tomato.SetActive(false);
-		ShowVisuals(false);
 	}
 
 	public List<ItemSO> GetItemsList()
-	{ 
-		return items; 
-	}
-
-	public void ShowVisuals(bool show)
 	{
-		completeVisual.SetActive(true);
+		return items;
 	}
 
 	public bool TryAddItemOnPlate(Item item)
@@ -45,10 +40,19 @@ public class Plate : MonoBehaviour
 		return true;
 	}
 
-	public void SetItemsVisuals()
+	public void SetItemsVisuals(List<ItemSO> itemList)
 	{
-		foreach (ItemSO item in items)
-			SetItemVisual(item.itemType);
+		items = itemList;
+
+		if (items.Count == 0)
+			Reset();
+		else
+		{
+			completeVisual.SetActive(true);
+
+			foreach (ItemSO item in items)
+				SetItemVisual(item.itemType);
+		}
 	}
 
 	void SetItemVisual(ItemSO.ItemType itemType)
