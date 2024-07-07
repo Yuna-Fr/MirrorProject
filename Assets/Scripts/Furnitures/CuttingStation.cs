@@ -5,14 +5,13 @@ using UnityEngine;
 public class CuttingStation : Furniture
 {
     // Start is called before the first frame update
-    void Start()
+    public override void OnAction1(PlayerController player)
     {
-        
+        base.OnAction1(player);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnAction2(PlayerController player)
     {
-        
+
     }
 }
