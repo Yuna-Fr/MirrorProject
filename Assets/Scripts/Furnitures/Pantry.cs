@@ -31,7 +31,6 @@ public class Pantry : Furniture
         itemComp.itemType = givenItem;
         itemComp.isTaken = true;
         NetworkServer.Spawn(item);
-        Debug.Log("prout", player.gameObject);
         player.TakeItemFromPantry(item);
     }
 }
