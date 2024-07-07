@@ -22,6 +22,11 @@ public class Plate : MonoBehaviour
 		ShowVisuals(false);
 	}
 
+	public List<ItemSO> GetItemsList()
+	{ 
+		return items; 
+	}
+
 	public void ShowVisuals(bool show)
 	{
 		completeVisual.SetActive(true);

@@ -3,17 +3,20 @@ using UnityEngine;
 
 public class DeliveryTable : Furniture
 {
-	[SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public GameObject droppedItem;
+	[SyncVar(hook = nameof(Hook_AnalysePlate)), HideInInspector] public GameObject droppedPlate;
 
-	public override void OnAction1()
+	public override void OnAction1(PlayerController player)
 	{
-		base.OnAction1();
+		base.OnAction1(player);
 
+		if (!player.IsHoldingPLate())
+			return;
 
+		droppedPlate = player.DropItemOnFurniture();
 	}
 
-	public void Hook_SetItem(GameObject oldValue, GameObject newValue)
+	public void Hook_AnalysePlate(GameObject oldPlate, GameObject newPlate)
 	{
-
+		OrderManager.Instance.DeliveryCheck(newPlate);
 	}
 }

@@ -90,7 +90,18 @@ public class PlayerController : NetworkBehaviour
 	{
 		return isHoldingItem;
 	}
+    {
+        return isHoldingPlate;
+    }
 
+    
+	{
+		GameObject item = takenItem;
+		RemoveTakeItem();
+		return item;
+	}
+	
+	#region Movements
     public bool IsHoldingPlate()
     {
         return isHoldingPlate;
@@ -166,7 +177,9 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(dashReload);
 		canDash = true;
     }
+	#endregion
 
+	#region ItemGestion
 	void TakeDropItem(InputAction.CallbackContext context)
 	{
 		if (!isHoldingItem)
@@ -193,7 +206,6 @@ public class PlayerController : NetworkBehaviour
 
 		if (targetedFurniture != null)
 			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
-
 	}
 
 	void DropItem()
@@ -207,6 +219,7 @@ public class PlayerController : NetworkBehaviour
 		else
             targetedFurniture.GetComponent<Furniture>().OnAction1(this);
 	}
+
 
 	void TakeDropWithPlate()
 	{
@@ -244,5 +257,5 @@ public class PlayerController : NetworkBehaviour
 
         fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}
-
+	#endregion
 }

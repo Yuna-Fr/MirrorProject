@@ -27,7 +27,26 @@ public class RecipeCardUI : MonoBehaviour
 	RecipeSO recipeRef = null;
 	float maxTimeToFinish;
 	float currentFillAmount = 60;
-	bool failed = false;
+	bool alreadyFinishing = false;
+
+	void Update()
+	{
+		if (currentFillAmount > 0)
+		{
+			currentFillAmount -= Time.deltaTime;
+			timeBar.fillAmount = (currentFillAmount) / (maxTimeToFinish);
+
+			if (timeBar.fillAmount <= 0.6f)
+			{
+				if (timeBar.fillAmount <= 0.3f)
+					timeBar.color = redColor;
+				else
+					timeBar.color = yellowColor;
+			}
+		}
+		else
+			RecipeFailedEffect();
+	}
 
 	public void SetCard(RecipeSO recipe)
 	{
@@ -58,31 +77,21 @@ public class RecipeCardUI : MonoBehaviour
 		canvasGroup.DOFade(1, fadeDuration);
 	}
 
-	void Update()
-	{
-		if (currentFillAmount > 0)
-		{
-			currentFillAmount -= Time.deltaTime;
-			timeBar.fillAmount = (currentFillAmount) / (maxTimeToFinish);
+	public RecipeSO GetRecipeRef() { return recipeRef; }
 
-			if (timeBar.fillAmount <= 0.6f)
-			{
-				if (timeBar.fillAmount <= 0.3f)
-					timeBar.color = redColor;
-				else
-					timeBar.color = yellowColor;
-			}
-		}
-		else
-			RecipeFailedEffect();
+	public void RecipeSucceedEffect()
+	{
+		cardBackground.DOColor(greenColor, shakeDuration / 2);
+		canvasGroup.DOFade(0, fadeDuration)
+			.OnComplete(() => { CloseRecipeCard(); });
 	}
 
-	void RecipeFailedEffect()
+	public void RecipeFailedEffect()
 	{
-		if (failed == true)
+		if (alreadyFinishing == true)
 			return;
 
-		failed = true;
+		alreadyFinishing = true;
 		cardBackground.DOColor(redColor, shakeDuration / 2);
 		canvasGroup.DOFade(1, fadeDuration);
 		transform.DOShakePosition(shakeDuration)
@@ -92,7 +101,7 @@ public class RecipeCardUI : MonoBehaviour
 	void CloseRecipeCard()
 	{
 		OrderManager.RecipeFinished.Invoke(recipeRef, false);
-		failed = false;
+		alreadyFinishing = false;
 		gameObject.SetActive(false);
 	}
 }

@@ -10,11 +10,12 @@ public class OrderManagerUI : NetworkBehaviour
 
 	[SerializeField] List<Transform> cardSlots;
 
-	Dictionary<string, RecipeSO> recipeSODictionary = new();
+	Dictionary<string, RecipeSO> allRecipeSODictionary = new();
 
 	void Start()
 	{
 		OrderManager.RecipeAdded += AddNewRecipeToCard;
+		OrderManager.RecipeFinished += RemoveRecipeCard;
 
 		LoadAllRecipeSO();
 	}
@@ -22,11 +23,34 @@ public class OrderManagerUI : NetworkBehaviour
 	void OnDestroy()
 	{
 		OrderManager.RecipeAdded -= AddNewRecipeToCard;
+		OrderManager.RecipeFinished -= RemoveRecipeCard;
 	}
 
+	#region CardDiplay
 	void AddNewRecipeToCard(RecipeSO recipe)
 	{
 		recipeName = recipe.shownName;
+	}
+
+	void RemoveRecipeCard(RecipeSO recipe, bool isSuccessful)
+	{
+		if (recipe == null) return;
+
+		List<Transform> activeCards = cardSlots.Where(obj => obj != null && obj.gameObject.activeSelf).ToList();
+
+		foreach (Transform card in activeCards)
+		{
+			RecipeCardUI recipeCard = card.gameObject.GetComponent<RecipeCardUI>();
+			if (recipeCard != null && recipeCard.GetRecipeRef() == recipe)
+			{
+				if (isSuccessful)
+					recipeCard.RecipeSucceedEffect();
+				else
+					recipeCard.RecipeFailedEffect();
+
+				return;
+			}
+		}
 	}
 
 	void Hook_AddCard(string recipeOld, string recipe)
@@ -55,16 +79,16 @@ public class OrderManagerUI : NetworkBehaviour
 		RecipeSO[] recipes = Resources.LoadAll<RecipeSO>("Recipes");
 		foreach (var recipe in recipes)
 		{
-			if (!recipeSODictionary.ContainsKey(recipe.shownName))
+			if (!allRecipeSODictionary.ContainsKey(recipe.shownName))
 			{
-				recipeSODictionary[recipe.shownName] = recipe;
+				allRecipeSODictionary[recipe.shownName] = recipe;
 			}
 		}
 	}
 
 	RecipeSO GetRecipeSO(string recipeSOName)
 	{
-		if (recipeSODictionary.TryGetValue(recipeSOName, out RecipeSO recipeSO))
+		if (allRecipeSODictionary.TryGetValue(recipeSOName, out RecipeSO recipeSO))
 		{
 			return recipeSO;
 		}
@@ -72,4 +96,5 @@ public class OrderManagerUI : NetworkBehaviour
 		Debug.LogError($"No recipe found with name {recipeSOName}");
 		return null;
 	}
+	#endregion
 }
