@@ -15,12 +15,12 @@ public class Item : NetworkBehaviour
     [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
     [SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public ItemSO.ItemType itemType;
 
-    static bool t = true;
+    //static bool t = true;
 
     private void Start()
     {
-        itemType = (t) ? ItemSO.ItemType.Plate : ItemSO.ItemType.Tomato;
-        t = !t;
+        //itemType = (t) ? ItemSO.ItemType.Plate : ItemSO.ItemType.Tomato;
+        //t = !t;
 
         if (isServer)
             rigidBody = gameObject.AddComponent<Rigidbody>();
