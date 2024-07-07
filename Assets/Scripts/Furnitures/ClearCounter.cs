@@ -30,7 +30,12 @@ public class ClearCounter : Furniture
         }
         else if (player.IsHoldingItem() && player.IsHoldingPlate())
         {
+            if (droppedItem == null)
+                PlayerDropItem(player);
+            else
+            {
 
+            }
         }
     }
 

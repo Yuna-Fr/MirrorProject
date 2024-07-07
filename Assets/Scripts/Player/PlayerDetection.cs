@@ -41,7 +41,7 @@ public class PlayerDetection : MonoBehaviour
 
     void Update()
     {
-        if (!playerController.IsHoldingItem())
+        if (!playerController.IsHoldingItem() || (playerController.IsHoldingItem() && playerController.IsHoldingPlate()))
             DetectItem();
 
         DetectFurniture();
@@ -125,7 +125,7 @@ public class PlayerDetection : MonoBehaviour
 
         Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
 
-        if (!Application.isPlaying || (Application.isPlaying && !playerController.IsHoldingItem()))
+        if (!Application.isPlaying || (Application.isPlaying && (!playerController.IsHoldingItem()) || (playerController.IsHoldingItem() && playerController.IsHoldingPlate())))
             Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox * 2);
 
         Gizmos.matrix = defaultMatrix;
@@ -152,7 +152,7 @@ public class PlayerDetection : MonoBehaviour
 
         Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
 
-        if (!Application.isPlaying || (Application.isPlaying && !playerController.IsHoldingItem()))
+        if (!Application.isPlaying || (Application.isPlaying && (!playerController.IsHoldingItem() || (playerController.IsHoldingItem() && playerController.IsHoldingPlate()))))
             Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox*2);
 
         Gizmos.matrix = defaultMatrix;

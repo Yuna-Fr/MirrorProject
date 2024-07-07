@@ -106,7 +106,6 @@ public class PlayerController : NetworkBehaviour
 			isHoldingPlate = (droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
         }
 
-
         RPC_TakeDropItem(droppedItem, true);
     }
 
@@ -211,8 +210,17 @@ public class PlayerController : NetworkBehaviour
 
 	void TakeDropWithPlate()
 	{
+		//if (targetedItem != null && targetedItem.GetComponent<Item>().GetItemSO())
 
-	}
+        if (targetedFurniture == null)
+        {
+            isHoldingItem = false;
+            isHoldingPlate = false;
+            RPC_TakeDropItem(null, false);
+        }
+        else
+            targetedFurniture.GetComponent<Furniture>().OnAction1(this);
+    }
 
     [Command] void RPC_TakeDropItem(GameObject item, bool isFromFurniture)
 	{
