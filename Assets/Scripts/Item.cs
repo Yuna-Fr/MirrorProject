@@ -10,15 +10,17 @@ public class Item : NetworkBehaviour
     [SerializeField] Collider collider;
 
     ItemSO itemSO;
-    Rigidbody rigidbody;
+    Rigidbody rigidBody;
 
     [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
     [SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public ItemSO.ItemType itemType;
 
     private void Start()
     {
+        itemType = ItemSO.ItemType.Tomato;
+
         if (isServer)
-            rigidbody = gameObject.AddComponent<Rigidbody>();
+            rigidBody = gameObject.AddComponent<Rigidbody>();
     }
 
     public void SetItem(ItemSO.ItemType itemType)
@@ -41,7 +43,7 @@ public class Item : NetworkBehaviour
         meshRenderer.enabled = !newValue;
 
         if (isServer)
-            rigidbody.isKinematic = newValue;
+            rigidBody.isKinematic = newValue;
     }
 
     void Hook_SetItem(ItemSO.ItemType oldValue, ItemSO.ItemType newValue)

@@ -33,7 +33,7 @@ public class PlayerController : NetworkBehaviour
 	bool isHoldingItem = false;
 	bool isHoldingPlate = false;
 
-	[SyncVar(hook = nameof(Hook_TakeDropItem))] GameObject takenItem;
+	[SyncVar(hook = nameof(Hook_TakeDropItem)), HideInInspector] public GameObject takenItem;
 
 	void Start()
 	{
@@ -91,7 +91,26 @@ public class PlayerController : NetworkBehaviour
 		return isHoldingItem;
 	}
 
-	void Move()
+    public bool IsHoldingPlate()
+    {
+        return isHoldingPlate;
+    }
+
+	public void TakeDropItemFromFurniture(GameObject droppedItem)
+	{
+		if (droppedItem == null)
+            isHoldingItem = isHoldingPlate = false;
+		else
+		{
+			isHoldingItem = true;
+			isHoldingPlate = (droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
+        }
+
+
+        RPC_TakeDropItem(droppedItem, true);
+    }
+
+    void Move()
 	{
         stickVector = inputs.InGame.Move.ReadValue<Vector2>();
 
@@ -168,7 +187,7 @@ public class PlayerController : NetworkBehaviour
 		{
             isHoldingItem = true;
 			isHoldingPlate = (targetedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
-            RPC_TakeDropItem(targetedItem);
+            RPC_TakeDropItem(targetedItem, false);
 			if(targetedFurniture == null)
             return;
 		}
@@ -184,7 +203,7 @@ public class PlayerController : NetworkBehaviour
 		{
             isHoldingItem = false;
             isHoldingPlate = false;
-            RPC_TakeDropItem(null);
+            RPC_TakeDropItem(null, false);
         }
 		else
             targetedFurniture.GetComponent<Furniture>().OnAction1(this);
@@ -195,13 +214,13 @@ public class PlayerController : NetworkBehaviour
 
 	}
 
-    [Command] void RPC_TakeDropItem(GameObject item)
+    [Command] void RPC_TakeDropItem(GameObject item, bool isFromFurniture)
 	{
-        if (item == null)
+        if (item == null && !isFromFurniture)
             takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(fakeItem.transform.position, fakeItem.transform.rotation);
 
         if (item != null) item.GetComponent<Item>().isTaken = true;
-        else if (takenItem != null) takenItem.GetComponent<Item>().isTaken = false;
+        else if (takenItem != null && !isFromFurniture) takenItem.GetComponent<Item>().isTaken = false;
 
         takenItem = item;
     }
