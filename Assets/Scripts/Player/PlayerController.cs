@@ -172,6 +172,10 @@ public class PlayerController : NetworkBehaviour
 			if(targetedFurniture == null)
             return;
 		}
+
+		if (targetedFurniture != null)
+			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
+
 	}
 
 	void DropItem()
@@ -182,6 +186,8 @@ public class PlayerController : NetworkBehaviour
             isHoldingPlate = false;
             RPC_TakeDropItem(null);
         }
+		else
+            targetedFurniture.GetComponent<Furniture>().OnAction1(this);
 	}
 
 	void TakeDropWithPlate()
