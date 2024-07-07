@@ -90,18 +90,7 @@ public class PlayerController : NetworkBehaviour
 	{
 		return isHoldingItem;
 	}
-    {
-        return isHoldingPlate;
-    }
 
-    
-	{
-		GameObject item = takenItem;
-		RemoveTakeItem();
-		return item;
-	}
-	
-	#region Movements
     public bool IsHoldingPlate()
     {
         return isHoldingPlate;
@@ -120,7 +109,15 @@ public class PlayerController : NetworkBehaviour
         RPC_TakeDropItem(droppedItem, true);
     }
 
-    void Move()
+	public GameObject DropItemOnDeliveryTable()
+	{
+		GameObject item = takenItem;
+		RemoveTakeItem();
+		return item;
+	}
+
+	#region Movements
+	void Move()
 	{
         stickVector = inputs.InGame.Move.ReadValue<Vector2>();
 
@@ -220,6 +217,10 @@ public class PlayerController : NetworkBehaviour
             targetedFurniture.GetComponent<Furniture>().OnAction1(this);
 	}
 
+	void RemoveTakeItem()
+	{
+		takenItem = null;
+	}
 
 	void TakeDropWithPlate()
 	{

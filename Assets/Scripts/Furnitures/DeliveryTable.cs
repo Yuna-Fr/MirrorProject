@@ -9,10 +9,10 @@ public class DeliveryTable : Furniture
 	{
 		base.OnAction1(player);
 
-		if (!player.IsHoldingPLate())
+		if (!player.IsHoldingPlate())
 			return;
 
-		droppedPlate = player.DropItemOnFurniture();
+		droppedPlate = player.DropItemOnDeliveryTable();
 	}
 
 	public void Hook_AnalysePlate(GameObject oldPlate, GameObject newPlate)

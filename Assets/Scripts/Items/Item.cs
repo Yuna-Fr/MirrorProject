@@ -1,5 +1,4 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Item : NetworkBehaviour
@@ -10,7 +9,7 @@ public class Item : NetworkBehaviour
 	[SerializeField] Plate plateScript;
 
 	ItemSO itemSO;
-	Rigidbody rigidbody;
+	Rigidbody rigidBody;
 
 	[SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
 	[SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public ItemSO.ItemType itemType;
@@ -18,7 +17,7 @@ public class Item : NetworkBehaviour
 	private void Start()
 	{
 		if (isServer)
-			rigidbody = gameObject.AddComponent<Rigidbody>();
+			rigidBody = gameObject.AddComponent<Rigidbody>();
 	}
 
 	public void SetItem(ItemSO.ItemType itemType)
@@ -52,7 +51,7 @@ public class Item : NetworkBehaviour
 		meshRenderer.enabled = !newValue;
 
 		if (isServer)
-			rigidbody.isKinematic = newValue;
+			rigidBody.isKinematic = newValue;
 	}
 
 	void Hook_SetItem(ItemSO.ItemType oldValue, ItemSO.ItemType newValue)
