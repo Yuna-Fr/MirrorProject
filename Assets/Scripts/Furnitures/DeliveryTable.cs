@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class DeliveryTable : Furniture
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	[SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public GameObject droppedItem;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	public override void OnAction1()
+	{
+		base.OnAction1();
+
+
+	}
+
+	public void Hook_SetItem(GameObject oldValue, GameObject newValue)
+	{
+
+	}
 }
