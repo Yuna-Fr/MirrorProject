@@ -4,7 +4,7 @@ using UnityEngine;
 public class ItemSO : ScriptableObject
 {
 	public ItemType itemType;
-	public bool comestible = false;
+	public bool isComestible = false;
 	public Sprite sprite;
 	public Mesh mesh;
 	public Material material;

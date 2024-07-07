@@ -96,7 +96,17 @@ public class PlayerController : NetworkBehaviour
         return isHoldingPlate;
     }
 
-	public void TakeDropItemFromFurniture(GameObject droppedItem)
+	public void SetIsHoldingItem(bool isHoldingItem)
+	{
+		this.isHoldingItem = isHoldingItem;
+	}
+
+    public void SetIsHoldingPlate(bool isHoldingPlate)
+    {
+        this.isHoldingPlate = isHoldingPlate;
+    }
+
+    public void TakeDropItemFromClearCounter(GameObject droppedItem)
 	{
 		if (droppedItem == null)
             isHoldingItem = isHoldingPlate = false;
@@ -107,6 +117,11 @@ public class PlayerController : NetworkBehaviour
         }
 
         RPC_TakeDropItem(droppedItem, true);
+    }
+
+	public void TakeItemFromPantry(GameObject pantryItem)
+	{
+		takenItem = pantryItem;
     }
 
 	public GameObject DropItemOnDeliveryTable()
@@ -224,16 +239,13 @@ public class PlayerController : NetworkBehaviour
 
 	void TakeDropWithPlate()
 	{
-		//if (targetedItem != null && targetedItem.GetComponent<Item>().GetItemSO())
-
-        if (targetedFurniture == null)
-        {
-            isHoldingItem = false;
-            isHoldingPlate = false;
-            RPC_TakeDropItem(null, false);
-        }
-        else
-            targetedFurniture.GetComponent<Furniture>().OnAction1(this);
+		if (targetedItem != null && targetedItem.GetComponent<Item>().GetItemSO().isComestible)
+		{
+			// Plate Logic
+			return;
+		}
+		else
+            DropItem();
     }
 
     [Command] void RPC_TakeDropItem(GameObject item, bool isFromFurniture)

@@ -34,7 +34,10 @@ public class ClearCounter : Furniture
                 PlayerDropItem(player);
             else
             {
+                if (!droppedItem.GetComponent<Item>().GetItemSO().isComestible)
+                    return;
 
+                // Plate Logic
             }
         }
     }
@@ -46,24 +49,23 @@ public class ClearCounter : Furniture
 
     void PlayerTakeItem(PlayerController player)
     {
-        player.TakeDropItemFromFurniture(droppedItem);
-        SetDroppedItem(null);
+        player.TakeDropItemFromClearCounter(droppedItem);
+        RPC_SetDroppedItem(null);
     }
 
     void PlayerDropItem(PlayerController player)
     {
-        SetDroppedItem(player.takenItem);
-        player.TakeDropItemFromFurniture(null);
+        RPC_SetDroppedItem(player.takenItem);
+        player.TakeDropItemFromClearCounter(null);
     }
 
-    [Command(requiresAuthority = false)] void SetDroppedItem(GameObject item)
+    [Command(requiresAuthority = false)] void RPC_SetDroppedItem(GameObject item)
     {
         droppedItem = item;
     }
 
     public void Hook_SetDroppedItem(GameObject oldValue, GameObject newValue)
     {
-
         if (newValue != null)
         {
             Item item = newValue.GetComponent<Item>();

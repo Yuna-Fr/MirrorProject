@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Plate
   m_EditorClassIdentifier: 
   itemType: 11
+  isComestible: 0
   sprite: {fileID: 21300000, guid: 3928afb5321bb3d489bbd4ac581b29a2, type: 3}
-  mesh: {fileID: 808474172911093344, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
+  mesh: {fileID: 808474172911093344, guid: c044efb604a1c2d4ab08cedf8f93efbd, type: 3}
   material: {fileID: -6518380632535569532, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}

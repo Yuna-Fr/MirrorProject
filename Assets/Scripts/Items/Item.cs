@@ -8,21 +8,19 @@ public class Item : NetworkBehaviour
 	[SerializeField] Collider collider;
 	[SerializeField] Plate plateScript;
 
-	ItemSO itemSO;
-	Rigidbody rigidBody;
+    ItemSO itemSO;
+    Rigidbody rigidBody;
 
-	[SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
+    [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
 	[SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public ItemSO.ItemType itemType;
-
-	static bool t = true;
 
 	private void Start()
 	{
-		itemType = (t) ? ItemSO.ItemType.Plate : ItemSO.ItemType.Tomato;
-		t = !t;
-
 		if (isServer)
-			rigidBody = gameObject.AddComponent<Rigidbody>();
+		{
+            rigidBody = gameObject.AddComponent<Rigidbody>();
+			rigidBody.isKinematic = true;
+        }
 	}
 
 	public void SetItem(ItemSO.ItemType itemType)

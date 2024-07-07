@@ -36,7 +36,7 @@ public class Plate : MonoBehaviour
 	{
 		ItemSO itemSO = item.GetItemSO();
 
-		if (items.Contains(itemSO) || !itemSO.comestible)
+		if (items.Contains(itemSO) || !itemSO.isComestible)
 			return false;
 
 		SetItemVisual(itemSO.itemType);
