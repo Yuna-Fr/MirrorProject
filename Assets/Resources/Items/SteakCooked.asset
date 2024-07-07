@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SteakCooked
   m_EditorClassIdentifier: 
   itemType: 7
+  comestible: 1
   sprite: {fileID: 21300000, guid: f1f50c7ef90b19741b26f2040806cf56, type: 3}
   mesh: {fileID: 2977383563096778778, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
   material: {fileID: -4093226344146330725, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bread
   m_EditorClassIdentifier: 
   itemType: 1
+  comestible: 1
   sprite: {fileID: 21300000, guid: 77b28124b8bda494381c80bd5aa42c22, type: 3}
   mesh: {fileID: -3739638386255917927, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
   material: {fileID: 2238796764414207470, guid: 240cb0343f51a264eaa7795cefe2dd94, type: 3}
