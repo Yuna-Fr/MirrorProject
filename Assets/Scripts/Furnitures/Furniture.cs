@@ -1,26 +1,20 @@
+using Mirror;
 using UnityEngine;
 
-public class Furniture : MonoBehaviour
+public abstract class Furniture : NetworkBehaviour
 {
-	public GameObject itemContained = null;
 
-	[SerializeField] bool neverAvailable = false;
-	[SerializeField] Transform itemContainer;
+	[SerializeField] bool hasContainer;
+	[SerializeField] bool isUsable;
 
-	public bool IsAvailable()
+    virtual public void OnAction1()
 	{
-		if (!neverAvailable || itemContained != null)
-			return false;
 
-		return true;
 	}
 
-	public Transform GetItemContainer()
-	{
-		if (IsAvailable())
-			return itemContainer;
-
-		return null;
-	}
-
+    virtual public void OnAction2()
+    {
+        if (!isUsable)
+            return;
+    }
 }
