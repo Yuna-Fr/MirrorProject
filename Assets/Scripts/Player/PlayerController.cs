@@ -31,6 +31,7 @@ public class PlayerController : NetworkBehaviour
     bool canDash = true;
 	bool isDashing = false;
 	bool isHoldingItem = false;
+	bool isHoldingPlate = false;
 
 	[SyncVar(hook = nameof(Hook_TakeDropItem))] GameObject takenItem;
 
@@ -152,9 +153,11 @@ public class PlayerController : NetworkBehaviour
 	{
 		if (!isHoldingItem)
 			TakeItem();
-		else
+		else if (isHoldingItem && !isHoldingPlate)
 			DropItem();
-	}
+		else if (isHoldingItem && isHoldingPlate)
+			TakeDropWithPlate();
+    }
 
 	void TakeItem()
 	{
@@ -164,7 +167,8 @@ public class PlayerController : NetworkBehaviour
 		if (targetedItem != null)
 		{
             isHoldingItem = true;
-			RPC_TakeDropItem(targetedItem);
+			isHoldingPlate = (targetedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
+            RPC_TakeDropItem(targetedItem);
 			if(targetedFurniture == null)
             return;
 		}
@@ -175,15 +179,14 @@ public class PlayerController : NetworkBehaviour
         if (targetedFurniture == null)
 		{
             isHoldingItem = false;
+            isHoldingPlate = false;
             RPC_TakeDropItem(null);
         }
-		else
-		{
-			Furniture furniture = targetedFurniture.GetComponent<Furniture>();
+	}
 
-			if (furniture && furniture.IsAvailable())
-				furniture.GetItemContainer();
-		}
+	void TakeDropWithPlate()
+	{
+
 	}
 
     [Command] void RPC_TakeDropItem(GameObject item)

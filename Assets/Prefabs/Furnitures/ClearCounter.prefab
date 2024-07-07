@@ -9,9 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5346586791456998913}
-  - component: {fileID: 1492067087703529562}
-  - component: {fileID: 7416060556944061642}
-  - component: {fileID: 8754362463372959524}
+  - component: {fileID: 5507502504978757891}
+  - component: {fileID: 3003188681040400161}
   - component: {fileID: 3761205678773916323}
   m_Layer: 7
   m_Name: ClearCounter
@@ -37,25 +36,7 @@ Transform:
   - {fileID: 6459085731396459677}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &1492067087703529562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3189457260119925810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f46e3409c788bda4eaa14721c11ecd0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  itemContained: {fileID: 0}
-  neverAvailable: 0
-  itemContainer: {fileID: 1725324618874274613}
---- !u!114 &7416060556944061642
+--- !u!114 &5507502504978757891
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -67,7 +48,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e844945446f8c0b4889807dc2b0a68af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8754362463372959524
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  hasContainer: 1
+  isUsable: 0
+  itemContainer: {fileID: 1725324618874274613}
+  droppedItem: {fileID: 0}
+--- !u!114 &3003188681040400161
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
