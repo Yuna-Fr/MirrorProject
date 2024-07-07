@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CheeseCut
   m_EditorClassIdentifier: 
   itemType: 3
-  comestible: 1
+  isComestible: 1
   sprite: {fileID: 21300000, guid: 549cb4f2b86d1b84d8cd41c1cfde26c8, type: 3}
-  mesh: {fileID: -639049293539451386, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
+  mesh: {fileID: -639049293539451386, guid: 87763d49f84b8484a937c64afab69a17, type: 3}
   material: {fileID: -7720851650173870308, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}

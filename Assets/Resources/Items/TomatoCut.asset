@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TomatoCut
   m_EditorClassIdentifier: 
   itemType: 10
-  comestible: 1
+  isComestible: 1
   sprite: {fileID: 21300000, guid: c9f08c3c1ae2a364aaeaa3712540b1d4, type: 3}
-  mesh: {fileID: -5804457194564966186, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
+  mesh: {fileID: -5804457194564966186, guid: cf5f89160b95a414ba3b4a5caf13ca42, type: 3}
   material: {fileID: -8876429951165359728, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}

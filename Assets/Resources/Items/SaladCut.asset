@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SaladCut
   m_EditorClassIdentifier: 
   itemType: 5
-  comestible: 1
+  isComestible: 1
   sprite: {fileID: 21300000, guid: bee24f07c57157e45a946eed3bfe8b84, type: 3}
-  mesh: {fileID: -1209773773234189734, guid: 36694ad9cc3abc04ab48fdb0373f2037, type: 3}
+  mesh: {fileID: -1209773773234189734, guid: 7eb63741781409844a3767795957ed58, type: 3}
   material: {fileID: 2100000, guid: f46454cbed06c8e4f8a0203bb4cd40ee, type: 2}
