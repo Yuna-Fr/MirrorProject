@@ -6,7 +6,7 @@ using UnityEngine;
 public class OrderManagerUI : NetworkBehaviour
 {
 	[SyncVar(hook = nameof(Hook_AddCard))]
-	string recipeName;
+	string latestRecipeName;
 
 	[SerializeField] List<Transform> cardSlots;
 
@@ -29,7 +29,7 @@ public class OrderManagerUI : NetworkBehaviour
 	#region CardDiplay
 	void AddNewRecipeToCard(RecipeSO recipe)
 	{
-		recipeName = recipe.shownName;
+		latestRecipeName = recipe.shownName;
 	}
 
 	void RemoveRecipeCard(RecipeSO recipe, bool isSuccessful)
@@ -66,7 +66,7 @@ public class OrderManagerUI : NetworkBehaviour
 		if (availableCard != null)
 		{
 			availableCard.gameObject.SetActive(true);
-			availableCard.SetCard(GetRecipeSO(recipeName));
+			availableCard.SetCard(GetRecipeSO(latestRecipeName));
 		}
 		else
 		{

@@ -14,14 +14,14 @@ public class ClearCounter : Furniture
 	{
 		base.OnAction1(player);
 
-		if (!player.IsHoldingItem())
+		if (!player.IsHoldingItem()) //Joueur main vide
 		{
 			if (droppedItem == null)
 				return;
 			else
 				PlayerTakeItem(player);
 		}
-		else if (player.IsHoldingItem() && !player.IsHoldingPlate())
+		else if (player.IsHoldingItem() && !player.IsHoldingPlate()) //Joueur a un ingrédient
 		{
 			if (droppedItem != null && droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate)
 			{
@@ -33,12 +33,12 @@ public class ClearCounter : Furniture
 			else
 				PlayerDropItem(player);
 		}
-		else if (player.IsHoldingItem() && player.IsHoldingPlate())
+		else if (player.IsHoldingItem() && player.IsHoldingPlate()) //Joueur a une assiette
 		{
 			if (droppedItem == null)
 				PlayerDropItem(player);
 
-			else if (player.takenItem.GetComponent<Plate>().TryAddItemOnPlate(droppedItem.GetComponent<Item>()))
+			else if (player.GetFakePlate().TryAddItemOnPlate(droppedItem.GetComponent<Item>()))
 				RPC_SetDroppedItem(null);
 		}
 	}
@@ -75,10 +75,10 @@ public class ClearCounter : Furniture
 
 			if (item.itemType == ItemSO.ItemType.Plate)
 				fakePlate.SetItemsVisuals(item.plateScript.GetItemsList());
-
-			else if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
-				fakePlate.Reset();
 		}
+		
+		if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
+			fakePlate.ResetVisuals();
 
 		fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}

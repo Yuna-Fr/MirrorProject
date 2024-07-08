@@ -134,6 +134,11 @@ public class PlayerController : NetworkBehaviour
 		return item;
 	}
 
+	public Plate GetFakePlate()
+	{
+		return fakePlate;
+	}
+
 	#region Movements
 	void Move()
 	{
@@ -282,10 +287,10 @@ public class PlayerController : NetworkBehaviour
 
 			else if (item.itemType == ItemSO.ItemType.Plate)
 				fakePlate.SetItemsVisuals(item.plateScript.GetItemsList());
-
-			else if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
-				fakePlate.Reset();
 		}
+
+		if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
+			fakePlate.ResetVisuals();
 
 		fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}

@@ -17,6 +17,9 @@ public class Pantry : Furniture
 
         RPC_SpawnAndGiveItem(player);
         player.SetIsHoldingItem(true);
+
+        if (givenItem == ItemSO.ItemType.Plate)
+            player.SetIsHoldingPlate(true);
     }
 
     public override void OnAction2(PlayerController player)

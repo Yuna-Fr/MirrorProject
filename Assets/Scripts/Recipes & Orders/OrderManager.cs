@@ -17,7 +17,7 @@ public class OrderManager : NetworkBehaviour
 	[SerializeField] int maxwaitingRecipes = 4;
 	[SerializeField] List<RecipeSO> recipes;
 
-	List<RecipeSO> waitingRecipes;
+	List<RecipeSO> waitingRecipes = new();
 
 	void Start()
 	{
@@ -48,20 +48,26 @@ public class OrderManager : NetworkBehaviour
 			return;
 		}
 
-		List<ItemSO> ingredientsList = plate.GetItemsList();
-		foreach (RecipeSO recipe in waitingRecipes)
+		if (waitingRecipes.Count != 0)
 		{
-			if (recipe.ingredients.Count == ingredientsList.Count)
+			List<ItemSO> ingredientsList = plate.GetItemsList();
+
+			foreach (RecipeSO recipe in waitingRecipes)
 			{
-				if (!recipe.ingredients.Except(ingredientsList).Any() && !ingredientsList.Except(recipe.ingredients).Any())
+				if (recipe.ingredients.Count == ingredientsList.Count)
 				{
-					NetworkServer.Destroy(plateGO);
-					RecipeFinished.Invoke(recipe, true);
+					if (!recipe.ingredients.Except(ingredientsList).Any() && !ingredientsList.Except(recipe.ingredients).Any())
+					{
+						NetworkServer.Destroy(plateGO);
+						RecipeFinished.Invoke(recipe, true);
+						return;	
+					}
 				}
 			}
 		}
 
 		NetworkServer.Destroy(plateGO);
+		//Destroy also fake on player
 		RecipeFinished.Invoke(null, false);
 	}
 
@@ -92,9 +98,6 @@ public class OrderManager : NetworkBehaviour
 
 	void OnRecipeFinished(RecipeSO recipe, bool withSuccess)
 	{
-		if (withSuccess && recipe)
-			//orderUI.RemoveRecipeCard(recipe, )
-
 		if (recipe)
 			waitingRecipes.Remove(recipe);
 	}

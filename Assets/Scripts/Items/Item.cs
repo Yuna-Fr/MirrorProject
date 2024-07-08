@@ -39,7 +39,7 @@ public class Item : NetworkBehaviour
 		}
 		else if (plateScript.enabled)
 		{
-			plateScript.Reset();
+			plateScript.ResetVisuals();
 			plateScript.enabled = false;
 		}
 	}

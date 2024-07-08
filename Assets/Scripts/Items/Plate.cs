@@ -12,10 +12,8 @@ public class Plate : MonoBehaviour
 
 	List<ItemSO> items = new();
 
-	public void Reset()
+	public void ResetVisuals()
 	{
-		items.Clear();
-		completeVisual.SetActive(false);
 		bread.SetActive(false);
 		cheese.SetActive(false);
 		salad.SetActive(false);
@@ -34,6 +32,7 @@ public class Plate : MonoBehaviour
 		if (items.Contains(itemSO) || !itemSO.isComestible)
 			return false;
 
+		completeVisual.SetActive(true);
 		SetItemVisual(itemSO.itemType);
 		items.Add(itemSO);
 
@@ -45,7 +44,7 @@ public class Plate : MonoBehaviour
 		items = itemList;
 
 		if (items.Count == 0)
-			Reset();
+			ResetVisuals();
 		else
 		{
 			completeVisual.SetActive(true);
