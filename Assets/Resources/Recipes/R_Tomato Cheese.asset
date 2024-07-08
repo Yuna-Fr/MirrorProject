@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3e7eb9718a3499468be45fd7e8af309, type: 3}
-  m_Name: R_Salad
+  m_Name: R_Tomato Cheese
   m_EditorClassIdentifier: 
-  shownName: PureSalad
+  shownName: Tomato Cheese
   sprite: {fileID: 0}
   ingredients:
-  - {fileID: 11400000, guid: 691bef52cd63d384cad4721c7879f17c, type: 2}
-  maxTimeToFinish: 30
+  - {fileID: 11400000, guid: 82104be32d3bb0b4bb1be32bab0e5a06, type: 2}
+  - {fileID: 11400000, guid: bd7a6854d18839040bdb4f787fd79b00, type: 2}
+  maxTimeToFinish: 55

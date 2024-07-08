@@ -444,12 +444,10 @@ MonoBehaviour:
   timerUpdateSec: 1
   maxwaitingRecipes: 4
   recipes:
-  - {fileID: 11400000, guid: 02861356c4a2a1c44ac771460c37ff64, type: 2}
-  - {fileID: 11400000, guid: 02861356c4a2a1c44ac771460c37ff64, type: 2}
-  - {fileID: 11400000, guid: 97aea3e84adbfb04dbdf479ec7d3d085, type: 2}
-  - {fileID: 11400000, guid: a80d866ec1689fc48a062d6d3383069f, type: 2}
-  - {fileID: 11400000, guid: 158e39645fd35bc43a123cca2a2a857b, type: 2}
-  - {fileID: 11400000, guid: 2d6a0f296bf178348891ef41ec2e4899, type: 2}
+  - {fileID: 11400000, guid: 16ed98651a517584cbd3c1655d42e042, type: 2}
+  - {fileID: 11400000, guid: 3643ed944d69b63489a1dc10b0cd492b, type: 2}
+  - {fileID: 11400000, guid: 17de8674ad86aa543bf58e5527bb2b85, type: 2}
+  - {fileID: 11400000, guid: a9bc28897b410fc409c5b2c09aa4f3ab, type: 2}
 --- !u!114 &320213967
 MonoBehaviour:
   m_ObjectHideFlags: 0
