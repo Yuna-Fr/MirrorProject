@@ -44,10 +44,6 @@ public class Plate : NetworkBehaviour
 		if (items.Contains(itemSO) || !itemSO.isComestible)
 			return false;
 
-		//completeVisual.SetActive(true);
-		//SetItemVisual(itemSO.itemType);
-		//items.Add(itemSO);
-
 		return true;
 	}
 

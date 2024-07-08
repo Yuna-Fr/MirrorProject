@@ -25,19 +25,22 @@ public class CuttingStation : Furniture
         }
         else if (player.IsHoldingItem() && !player.IsHoldingPlate())
         {
-            if (droppedItem != null && droppedItem.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
-            {
-                // Plate Logic
-            }
-            else if (droppedItem != null)
+            if (droppedItem != null)
                 return;
             else
                 if (IsItemCutable(player.takenItem.GetComponent<Item>().itemType))
-                PlayerDropItem(player);
+                    PlayerDropItem(player);
         }
         else if (player.IsHoldingItem() && player.IsHoldingPlate())
         {
-            // Plate Logic
+            if (droppedItem == null)
+                PlayerDropItem(player);
+
+            else if (player.GetFakePlate().TryAddItemOnPlate(droppedItem.GetComponent<Item>()))
+            {
+                player.GetFakePlate().AddItemInPlate(droppedItem.GetComponent<Item>(), player.takenItem.GetComponent<Item>());
+                RPC_SetDroppedItem(null);
+            }
         }
 
     }

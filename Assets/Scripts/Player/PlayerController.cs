@@ -253,13 +253,19 @@ public class PlayerController : NetworkBehaviour
 
 	void TakeDropWithPlate()
 	{
-		if (targetedItem != null && targetedItem.GetComponent<Item>().GetItemSO().isComestible)
+		if (targetedItem != null && fakePlate.TryAddItemOnPlate(targetedItem.GetComponent<Item>()))
 		{
-			// Plate Logic
+           fakePlate.AddItemInPlate(targetedItem.GetComponent<Item>(), takenItem.GetComponent<Item>());
+           return;
+		}
+
+		if (targetedFurniture != null)
+		{
+			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
 			return;
 		}
-		else
-			DropItem();
+
+		DropItem();
 	}
 
 	[Command]

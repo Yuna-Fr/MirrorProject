@@ -42,8 +42,11 @@ public class ClearCounter : Furniture
 				PlayerDropItem(player);
 
 			else if (player.GetFakePlate().TryAddItemOnPlate(droppedItem.GetComponent<Item>()))
-				RPC_SetDroppedItem(null);
-		}
+			{
+                player.GetFakePlate().AddItemInPlate(droppedItem.GetComponent<Item>(), player.takenItem.GetComponent<Item>());
+                RPC_SetDroppedItem(null);
+            }
+        }
 	}
 
 	public override void OnAction2(PlayerController player)
