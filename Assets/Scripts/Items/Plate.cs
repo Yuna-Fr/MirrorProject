@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public class Plate : NetworkBehaviour
@@ -13,7 +14,7 @@ public class Plate : NetworkBehaviour
 	[SerializeField] GameObject salad;
 	[SerializeField] GameObject tomato;
 
-	List<ItemSO> items = new();
+	[SyncVar(hook = nameof(Hook_ItemList))] List<ItemSO.ItemType> items = new();
 
 	public void ResetVisuals()
 	{
@@ -23,43 +24,51 @@ public class Plate : NetworkBehaviour
 		tomato.SetActive(false);
     }
 
-	public List<ItemSO> GetItemsList()
+	public List<ItemSO.ItemType> GetItemsList()
 	{
 		return items;
 	}
 
-	public void AddItemInPlate(Item itemToAdd, Item plateItem)
+	public List<ItemSO> GetItemSOList()
 	{
-		SetItemVisual(itemToAdd.itemType);
-		Plate plate = plateItem.GetComponent<Plate>();
-        plate.SetItemVisual(itemToAdd.itemType);
-		plate.GetItemsList().Add(itemToAdd.GetItemSO());
-		Destroy(itemToAdd.gameObject);
+		List<ItemSO> itemsSO = new();
+
+		foreach (ItemSO.ItemType item in items)
+			itemsSO.Add(Resources.Load<ItemSO>($"Items/{item}"));
+
+		return itemsSO;
 	}
 
-	public bool TryAddItemOnPlate(Item item)
+	public void AddItemInPlate(ItemSO.ItemType addedItem)
+    {
+		List<ItemSO.ItemType> newList = new();
+
+		items.ForEach(item => newList.Add(item));
+
+		newList.Add(addedItem);
+
+		RPC_UpdatePlateVisual(newList);
+    }
+
+    public bool CanAddItemOnPlate(Item item)
 	{
 		ItemSO itemSO = item.GetItemSO();
 
-		if (items.Contains(itemSO) || !itemSO.isComestible)
+		if (items.Contains(item.itemType) || !itemSO.isComestible)
 			return false;
 
 		return true;
 	}
 
-	public void SetItemsVisuals(List<ItemSO> itemList)
+	public void SetItemsVisuals(List<ItemSO.ItemType> itemList)
 	{
 		items = itemList;
 
 		if (items.Count == 0)
 			ResetVisuals();
 		else
-		{
-			completeVisual.SetActive(true);
-
-			foreach (ItemSO item in items)
-				SetItemVisual(item.itemType);
-		}
+			foreach (ItemSO.ItemType item in items)
+				SetItemVisual(item);
 	}
 
 	public void ActiveCompleteVisual(bool isActive)
@@ -80,5 +89,16 @@ public class Plate : NetworkBehaviour
 
 		if (target)
 			target.SetActive(true);
+	}
+
+	[Command(requiresAuthority = false)]
+	void RPC_UpdatePlateVisual(List<ItemSO.ItemType> newList)
+	{
+        items = newList;
+    }
+
+	void Hook_ItemList(List<ItemSO.ItemType> oldValue, List<ItemSO.ItemType> newValue)
+	{
+		SetItemsVisuals(newValue);
 	}
 }

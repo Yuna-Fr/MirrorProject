@@ -1,4 +1,5 @@
 using Mirror;
+using Org.BouncyCastle.Utilities.IO.Pem;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -109,8 +110,10 @@ public class PlayerController : NetworkBehaviour
 		this.isHoldingPlate = isHoldingPlate;
 	}
 
-	public void TakeDropItemFromClearCounter(GameObject droppedItem)
+	public void TakeDropItemFromClearCounter(GameObject droppedItem, bool isItemDestroyed = false)
 	{
+		GameObject oldTakenItem = takenItem;
+
 		if (droppedItem == null)
 			isHoldingItem = isHoldingPlate = false;
 		else
@@ -120,6 +123,9 @@ public class PlayerController : NetworkBehaviour
 		}
 
 		RPC_TakeDropItem(droppedItem, true);
+
+		if (isItemDestroyed)
+			RPC_DestroyItem(oldTakenItem);
 	}
 
 	public void TakeItemFromPantry(GameObject pantryItem)
@@ -226,8 +232,7 @@ public class PlayerController : NetworkBehaviour
 			isHoldingItem = true;
 			isHoldingPlate = (targetedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
 			RPC_TakeDropItem(targetedItem, false);
-			if (targetedFurniture == null)
-				return;
+			return;
 		}
 
 		if (targetedFurniture != null)
@@ -253,10 +258,13 @@ public class PlayerController : NetworkBehaviour
 
 	void TakeDropWithPlate()
 	{
-		if (targetedItem != null && fakePlate.TryAddItemOnPlate(targetedItem.GetComponent<Item>()))
+		if (targetedItem != null && fakePlate.CanAddItemOnPlate(targetedItem.GetComponent<Item>()))
 		{
-           fakePlate.AddItemInPlate(targetedItem.GetComponent<Item>(), takenItem.GetComponent<Item>());
-           return;
+			ItemSO.ItemType item = targetedItem.GetComponent<Item>().itemType;
+            fakePlate.AddItemInPlate(item);
+			takenItem.GetComponent<Plate>().AddItemInPlate(item);
+			RPC_DestroyItem(targetedItem);
+            return;
 		}
 
 		if (targetedFurniture != null)
@@ -271,14 +279,23 @@ public class PlayerController : NetworkBehaviour
 	[Command]
 	void RPC_TakeDropItem(GameObject item, bool isFromFurniture)
 	{
+		GameObject refToTakenItem = takenItem;
+
 		if (item == null && !isFromFurniture)
 			takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(fakeItem.transform.position, fakeItem.transform.rotation);
 
 		if (item != null) item.GetComponent<Item>().isTaken = true;
 		else if (takenItem != null && !isFromFurniture) takenItem.GetComponent<Item>().isTaken = false;
+		else if (item == null && isFromFurniture) refToTakenItem.GetComponent<Item>().isTaken = true;
 
-		takenItem = item;
+        takenItem = item;
 	}
+
+	[Command]
+	public void RPC_DestroyItem(GameObject item)
+	{
+        NetworkServer.Destroy(item);
+    }
 
 	void Hook_TakeDropItem(GameObject oldValue, GameObject newValue)
 	{
@@ -293,9 +310,9 @@ public class PlayerController : NetworkBehaviour
 		}
 
 		if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
-			fakePlate.ResetVisuals();
+            fakePlate.ResetVisuals();
 
-		fakeItemVisual.enabled = (newValue == null) ? false : true;
+        fakeItemVisual.enabled = (newValue == null) ? false : true;
 	}
 	#endregion
 }

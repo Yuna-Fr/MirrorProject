@@ -348,6 +348,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4559c979aaf7646b9c5da666fd670d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isFakePlate: 0
   completeVisual: {fileID: 8905973500291440692}
   bread: {fileID: 5724726850482698754}
   cheese: {fileID: 5724726850069089998}

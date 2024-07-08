@@ -31,17 +31,6 @@ public class Item : NetworkBehaviour
 		meshRenderer.sharedMaterial = itemSO.material;
 		meshFilter.sharedMesh = itemSO.mesh;
 		(collider as MeshCollider).sharedMesh = meshFilter.mesh;
-
-		if (itemType == ItemSO.ItemType.Plate)
-		{
-			plateScript.enabled = true;
-			//plateScript.SetItemsVisuals(plateScript.GetItemsList()); //just set active all plate and desactivate instead ?
-		}
-		else if (plateScript.enabled)
-		{
-			plateScript.ResetVisuals();
-			plateScript.enabled = false;
-		}
 	}
 
 	public ItemSO GetItemSO()

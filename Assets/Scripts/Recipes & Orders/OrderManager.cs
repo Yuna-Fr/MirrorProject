@@ -49,7 +49,7 @@ public class OrderManager : NetworkBehaviour
 
 		if (waitingRecipes.Count != 0)
 		{
-			List<ItemSO> ingredientsList = plate.GetItemsList();
+			List<ItemSO> ingredientsList = plate.GetItemSOList();
 
 			foreach (RecipeSO recipe in waitingRecipes)
 			{

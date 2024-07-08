@@ -25,10 +25,12 @@ public class ClearCounter : Furniture
 		{
 			if (droppedItem != null && droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate)
 			{
-				if (fakePlate.TryAddItemOnPlate(player.takenItem.GetComponent<Item>()))
+				if (fakePlate.CanAddItemOnPlate(player.takenItem.GetComponent<Item>()))
 				{
-					fakePlate.AddItemInPlate(player.takenItem.GetComponent<Item>(), droppedItem.GetComponent<Item>());
-                    player.TakeDropItemFromClearCounter(null);
+					ItemSO.ItemType item = player.takenItem.GetComponent<Item>().itemType;
+                    fakePlate.AddItemInPlate(item);
+					droppedItem.GetComponent<Plate>().AddItemInPlate(item);
+                    player.TakeDropItemFromClearCounter(null, true);
                 }
 			}
 			else if (droppedItem != null)
@@ -41,10 +43,12 @@ public class ClearCounter : Furniture
 			if (droppedItem == null)
 				PlayerDropItem(player);
 
-			else if (player.GetFakePlate().TryAddItemOnPlate(droppedItem.GetComponent<Item>()))
+			else if (player.GetFakePlate().CanAddItemOnPlate(droppedItem.GetComponent<Item>()))
 			{
-                player.GetFakePlate().AddItemInPlate(droppedItem.GetComponent<Item>(), player.takenItem.GetComponent<Item>());
-                RPC_SetDroppedItem(null);
+				ItemSO.ItemType item = droppedItem.GetComponent<Item>().itemType;
+                player.GetFakePlate().AddItemInPlate(item);
+				player.takenItem.GetComponent<Plate>().AddItemInPlate(item);
+                RPC_SetDroppedItem(null, true);
             }
         }
 	}
@@ -57,21 +61,25 @@ public class ClearCounter : Furniture
 	void PlayerTakeItem(PlayerController player)
 	{
 		player.TakeDropItemFromClearCounter(droppedItem);
-		RPC_SetDroppedItem(null);
+		RPC_SetDroppedItem(null, false);
 	}
 
 	void PlayerDropItem(PlayerController player)
 	{
-		RPC_SetDroppedItem(player.takenItem);
+		RPC_SetDroppedItem(player.takenItem, false);
 		player.TakeDropItemFromClearCounter(null);
 	}
 
-	[Command(requiresAuthority = false)] void RPC_SetDroppedItem(GameObject item)
+	[Command(requiresAuthority = false)] void RPC_SetDroppedItem(GameObject item, bool isItemDestroyed)
 	{
+		GameObject oldDroppedItem = droppedItem;
 		droppedItem = item;
-	}
 
-	public void Hook_SetDroppedItem(GameObject oldValue, GameObject newValue)
+		if (isItemDestroyed)
+            NetworkServer.Destroy(oldDroppedItem);
+    }
+
+    public void Hook_SetDroppedItem(GameObject oldValue, GameObject newValue)
 	{
 		if (newValue != null)
 		{

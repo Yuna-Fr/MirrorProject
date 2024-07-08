@@ -36,10 +36,12 @@ public class CuttingStation : Furniture
             if (droppedItem == null)
                 PlayerDropItem(player);
 
-            else if (player.GetFakePlate().TryAddItemOnPlate(droppedItem.GetComponent<Item>()))
+            else if (player.GetFakePlate().CanAddItemOnPlate(droppedItem.GetComponent<Item>()))
             {
-                player.GetFakePlate().AddItemInPlate(droppedItem.GetComponent<Item>(), player.takenItem.GetComponent<Item>());
-                RPC_SetDroppedItem(null);
+                ItemSO.ItemType item = droppedItem.GetComponent<Item>().itemType;
+                player.GetFakePlate().AddItemInPlate(item);
+                player.takenItem.GetComponent<Plate>().AddItemInPlate(item);
+                RPC_SetDroppedItem(null, true);
             }
         }
 
@@ -59,12 +61,12 @@ public class CuttingStation : Furniture
     void PlayerTakeItem(PlayerController player)
     {
         player.TakeDropItemFromClearCounter(droppedItem);
-        RPC_SetDroppedItem(null);
+        RPC_SetDroppedItem(null, false);
     }
 
     void PlayerDropItem(PlayerController player)
     {
-        RPC_SetDroppedItem(player.takenItem);
+        RPC_SetDroppedItem(player.takenItem, false);
         player.TakeDropItemFromClearCounter(null);
     }
 
@@ -83,9 +85,16 @@ public class CuttingStation : Furniture
     }
 
     [Command(requiresAuthority = false)]
-    void RPC_SetDroppedItem(GameObject item)
+    void RPC_SetDroppedItem(GameObject item, bool isItemDestroyed)
     {
+        GameObject oldDroppedItem = droppedItem;
         droppedItem = item;
+
+        if (item != null)
+            hookForFakeCutItem = item.GetComponent<Item>().itemType;
+
+        if (isItemDestroyed)
+            NetworkServer.Destroy(oldDroppedItem);
     }
 
     [Command(requiresAuthority = false)]
@@ -93,6 +102,7 @@ public class CuttingStation : Furniture
     {
         Item item = droppedItem.GetComponent<Item>();
         item.itemType = hookForFakeCutItem = item.GetItemSO().nextItemType;
+        Debug.Log("ça passe ici");
     }
 
     void Hook_SetDroppedItem(GameObject oldValue, GameObject newValue)
