@@ -50,8 +50,9 @@ public class PlayerController : NetworkBehaviour
 		inputs = new InputSystem();
 		inputs.InGame.Enable();
 		inputs.InGame.Dash.performed += OnDash;
-		inputs.InGame.Takedrop.performed += TakeDropItem;
-	}
+		inputs.InGame.Takedrop.performed += OnTakeDropItem;
+		inputs.InGame.Interact.performed += OnInteract;
+    }
 
 	void OnDestroy()
 	{
@@ -59,8 +60,9 @@ public class PlayerController : NetworkBehaviour
 			return;
 
 		inputs.InGame.Interact.performed -= OnDash;
-		inputs.InGame.Takedrop.performed -= TakeDropItem;
-		inputs.InGame.Disable();
+		inputs.InGame.Takedrop.performed -= OnTakeDropItem;
+        inputs.InGame.Interact.performed -= OnInteract;
+        inputs.InGame.Disable();
 	}
 
 	void Update()
@@ -193,7 +195,7 @@ public class PlayerController : NetworkBehaviour
 	#endregion
 
 	#region ItemGestion
-	void TakeDropItem(InputAction.CallbackContext context)
+	void OnTakeDropItem(InputAction.CallbackContext context)
 	{
 		if (!isHoldingItem)
 			TakeItem();
@@ -201,6 +203,12 @@ public class PlayerController : NetworkBehaviour
 			DropItem();
 		else if (isHoldingItem && isHoldingPlate)
 			TakeDropWithPlate();
+	}
+
+	void OnInteract(InputAction.CallbackContext context)
+	{
+		if (!isHoldingItem && targetedFurniture != null)
+			targetedFurniture.GetComponent<Furniture>().OnAction2(this);
 	}
 
 	void TakeItem()

@@ -8,6 +8,7 @@ public class ItemSO : ScriptableObject
 	public Sprite sprite;
 	public Mesh mesh;
 	public Material material;
+	public ItemType nextItemType;
 
 	public enum ItemType
 	{

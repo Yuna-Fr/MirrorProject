@@ -7,7 +7,6 @@ public class ClearCounter : Furniture
 	[SerializeField] MeshRenderer fakeItemVisual;
 	[SerializeField] MeshFilter fakeItemVisualFilter;
 	[SerializeField] Plate fakePlate;
-	bool isFilled = false;
 
 	[SyncVar(hook = nameof(Hook_SetDroppedItem)), HideInInspector] public GameObject droppedItem;
 
@@ -61,8 +60,7 @@ public class ClearCounter : Furniture
 		player.TakeDropItemFromClearCounter(null);
 	}
 
-	[Command(requiresAuthority = false)]
-	void RPC_SetDroppedItem(GameObject item)
+	[Command(requiresAuthority = false)] void RPC_SetDroppedItem(GameObject item)
 	{
 		droppedItem = item;
 	}
