@@ -25,8 +25,11 @@ public class ClearCounter : Furniture
 		{
 			if (droppedItem != null && droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate)
 			{
-				if(droppedItem.GetComponent<Plate>().TryAddItemOnPlate(player.takenItem.GetComponent<Item>()))
-					player.TakeDropItemFromClearCounter(null);
+				if (fakePlate.TryAddItemOnPlate(player.takenItem.GetComponent<Item>()))
+				{
+					fakePlate.AddItemInPlate(player.takenItem.GetComponent<Item>(), droppedItem.GetComponent<Item>());
+                    player.TakeDropItemFromClearCounter(null);
+                }
 			}
 			else if (droppedItem != null)
 				return;

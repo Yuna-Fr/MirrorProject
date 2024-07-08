@@ -35,7 +35,7 @@ public class Item : NetworkBehaviour
 		if (itemType == ItemSO.ItemType.Plate)
 		{
 			plateScript.enabled = true;
-			plateScript.SetItemsVisuals(plateScript.GetItemsList()); //just set active all plate and desactivate instead ?
+			//plateScript.SetItemsVisuals(plateScript.GetItemsList()); //just set active all plate and desactivate instead ?
 		}
 		else if (plateScript.enabled)
 		{
@@ -56,6 +56,11 @@ public class Item : NetworkBehaviour
 
 		if (isServer)
 			rigidBody.isKinematic = newValue;
+
+		if (itemType == ItemSO.ItemType.Plate)
+		{
+			GetComponent<Plate>().ActiveCompleteVisual(!newValue);
+        }
 	}
 
 	void Hook_SetItem(ItemSO.ItemType oldValue, ItemSO.ItemType newValue)

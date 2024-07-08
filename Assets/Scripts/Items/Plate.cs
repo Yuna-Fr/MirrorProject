@@ -1,8 +1,11 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plate : MonoBehaviour
+public class Plate : NetworkBehaviour
 {
+	[SerializeField] public bool isFakePlate = false;
+
 	[Header("Visuals")]
 	[SerializeField] GameObject completeVisual;
 	[SerializeField] GameObject bread;
@@ -18,11 +21,20 @@ public class Plate : MonoBehaviour
 		cheese.SetActive(false);
 		salad.SetActive(false);
 		tomato.SetActive(false);
-	}
+    }
 
 	public List<ItemSO> GetItemsList()
 	{
 		return items;
+	}
+
+	public void AddItemInPlate(Item itemToAdd, Item plateItem)
+	{
+		SetItemVisual(itemToAdd.itemType);
+		Plate plate = plateItem.GetComponent<Plate>();
+        plate.SetItemVisual(itemToAdd.itemType);
+		plate.GetItemsList().Add(itemToAdd.GetItemSO());
+		Destroy(itemToAdd.gameObject);
 	}
 
 	public bool TryAddItemOnPlate(Item item)
@@ -32,9 +44,9 @@ public class Plate : MonoBehaviour
 		if (items.Contains(itemSO) || !itemSO.isComestible)
 			return false;
 
-		completeVisual.SetActive(true);
-		SetItemVisual(itemSO.itemType);
-		items.Add(itemSO);
+		//completeVisual.SetActive(true);
+		//SetItemVisual(itemSO.itemType);
+		//items.Add(itemSO);
 
 		return true;
 	}
@@ -54,7 +66,12 @@ public class Plate : MonoBehaviour
 		}
 	}
 
-	void SetItemVisual(ItemSO.ItemType itemType)
+	public void ActiveCompleteVisual(bool isActive)
+	{
+		completeVisual.SetActive(isActive);
+	}
+
+	public void SetItemVisual(ItemSO.ItemType itemType)
 	{
 		GameObject target = itemType switch
 		{

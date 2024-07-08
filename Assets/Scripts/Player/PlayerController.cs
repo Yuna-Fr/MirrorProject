@@ -282,10 +282,7 @@ public class PlayerController : NetworkBehaviour
 			fakeItemVisual.sharedMaterial = item.GetItemSO().material;
 			fakeItemVisualFilter.sharedMesh = item.GetItemSO().mesh;
 
-			if (IsHoldingPlate())
-				fakePlate.TryAddItemOnPlate(item);
-
-			else if (item.itemType == ItemSO.ItemType.Plate)
+			if (item.itemType == ItemSO.ItemType.Plate)
 				fakePlate.SetItemsVisuals(item.plateScript.GetItemsList());
 		}
 
