@@ -1,5 +1,4 @@
 using Mirror;
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,20 +53,21 @@ public class OrderManager : NetworkBehaviour
 
 			foreach (RecipeSO recipe in waitingRecipes)
 			{
-				if (recipe.ingredients.Count == ingredientsList.Count)
+				if (recipe.ingredients.Count == ingredientsList.Count &&
+					!recipe.ingredients.Except(ingredientsList).Any() && !ingredientsList.Except(recipe.ingredients).Any())
 				{
-					if (!recipe.ingredients.Except(ingredientsList).Any() && !ingredientsList.Except(recipe.ingredients).Any())
-					{
-						NetworkServer.Destroy(plateGO);
-						RecipeFinished.Invoke(recipe, true);
-						return;	
-					}
+					Debug.Log("Success Recipe, BONUS");
+					plate.ResetVisuals();
+					NetworkServer.Destroy(plateGO);
+					RecipeFinished.Invoke(recipe, true);
+					return;
 				}
 			}
 		}
 
+		Debug.Log("Fail Recipe, MALUS");
+		plate.ResetVisuals();
 		NetworkServer.Destroy(plateGO);
-		//Destroy also fake on player
 		RecipeFinished.Invoke(null, false);
 	}
 

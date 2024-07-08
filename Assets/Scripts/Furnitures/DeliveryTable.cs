@@ -13,6 +13,7 @@ public class DeliveryTable : Furniture
 			return;
 
 		droppedPlate = player.DropItemOnDeliveryTable();
+		player.takenItem = null;
 	}
 
 	public void Hook_AnalysePlate(GameObject oldPlate, GameObject newPlate)
