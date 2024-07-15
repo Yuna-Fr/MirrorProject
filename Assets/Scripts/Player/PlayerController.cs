@@ -21,7 +21,7 @@ public class PlayerController : NetworkBehaviour
 	[SerializeField] GameObject fakeItem;
 
 	InputSystem inputs;
-	CharacterController characterController;
+	Rigidbody rigidBody;
 	GameObject targetedItem;
 	GameObject targetedFurniture;
 	MeshRenderer fakeItemVisual;
@@ -46,7 +46,7 @@ public class PlayerController : NetworkBehaviour
 			return;
 
 		wasLocalPlayer = true;
-		characterController = GetComponent<CharacterController>();
+		rigidBody = GetComponent<Rigidbody>();
 
 		inputs = new InputSystem();
 		inputs.InGame.Enable();
@@ -109,19 +109,33 @@ public class PlayerController : NetworkBehaviour
 	void Move()
 	{
 		stickVector = inputs.InGame.Move.ReadValue<Vector2>();
+		bool isMoving = !(Mathf.Abs(stickVector.x) < stickThreshold && Mathf.Abs(stickVector.y) < stickThreshold);
 
-		if (Mathf.Abs(stickVector.x) < stickThreshold && Mathf.Abs(stickVector.y) < stickThreshold)
-			moveDirection = Vector3.zero;
+
+        if (isMoving)
+		{
+            moveDirection = new(stickVector.x, 0.0f, stickVector.y);
+
+			rigidBody.AddForce(moveDirection * 10, ForceMode.Force);
+
+			Vector3 planSpeed = new Vector3 (rigidBody.velocity.x, 0, rigidBody.velocity.z);
+
+			if (planSpeed.magnitude > 2)
+			{
+				planSpeed = planSpeed.normalized * 2;
+				rigidBody.velocity = new Vector3(planSpeed.x, rigidBody.velocity.y, planSpeed.z);
+			}
+        }
 		else
-			moveDirection = new(stickVector.x, 0.0f, stickVector.y);
+		{
+            moveDirection = Vector3.zero;
 
-		characterController.Move(moveDirection * speed * Time.deltaTime);
+			rigidBody.velocity = new Vector3(rigidBody.velocity.x * 0.9f, rigidBody.velocity.y, rigidBody.velocity.z * 0.9f);
+        }
 
-		if (moveDirection != Vector3.zero)
+        if (moveDirection != Vector3.zero)
 			Rotate();
 
-		if (!onGround)
-			ApplyGravity();
 	}
 
 	void Rotate()
@@ -129,49 +143,16 @@ public class PlayerController : NetworkBehaviour
 		transform.forward = Vector3.Slerp(transform.forward, moveDirection.normalized, rotationSpeed * Time.deltaTime);
 	}
 
-	void ApplyGravity()
-	{
-		characterController.Move(-transform.up * fallSpeed * Time.deltaTime);
-	}
-
 	void OnDash(InputAction.CallbackContext context)
 	{
-		if (canDash)
+		if (!isDashing && canDash)
 		{
+            isDashing = true;
 			canDash = false;
-			isDashing = true;
-			Vector3 destination = transform.position + (transform.forward * dashLength);
-            RaycastHit hitInfo;
-
-			if (Physics.CapsuleCast(transform.position, transform.position + transform.up*characterController.height, characterController.radius, transform.forward, out hitInfo, dashLength))
-			{
-				Vector3 normal = hitInfo.normal;
-				Vector3 point = hitInfo.point;
-
-				Vector3 surfaceVec = Vector3.Cross(normal, Vector3.up).normalized;
-
-				if ((surfaceVec.x < 0 && (Mathf.Abs(surfaceVec.x) > Mathf.Abs(surfaceVec.z))) || (surfaceVec.z < 0 && (Mathf.Abs(surfaceVec.z) > Mathf.Abs(surfaceVec.x))))
-					surfaceVec *= -1.0f;
-
-				Vector3 remainingForce = destination - point;
-
-				Vector3 projection = Vector3.Project(remainingForce, surfaceVec);
-
-				Vector3 radiusOffset = normal * characterController.radius;
-
-                Vector3 finalPoint = point + projection + radiusOffset;
-
-				if (Physics.Raycast(point + radiusOffset, projection, out hitInfo, projection.magnitude + characterController.radius))
-				{
-					finalPoint = hitInfo.point + (hitInfo.normal * characterController.radius);
-				}
-
-                destination = new Vector3(finalPoint.x, transform.position.y, finalPoint.z);
-			}
-
-			StartCoroutine(Dash(destination));
+            rigidBody.AddForce(transform.forward*10, ForceMode.Impulse);
 			StartCoroutine(ReloadDash());
-		}
+			StartCoroutine(ReloadIsDashing());
+        }
 	}
 
 	IEnumerator Dash(Vector3 destination)
@@ -210,7 +191,13 @@ public class PlayerController : NetworkBehaviour
 		canDash = true;
 	}
 
-	void OnTakeDropItem(InputAction.CallbackContext context)
+    IEnumerator ReloadIsDashing()
+    {
+        yield return new WaitForSeconds(0.1f);
+        isDashing = false;
+    }
+
+    void OnTakeDropItem(InputAction.CallbackContext context)
 	{
 
 	}
