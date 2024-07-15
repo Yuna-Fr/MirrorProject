@@ -48,7 +48,7 @@ public class Item : NetworkBehaviour
 
 		if (itemType == ItemSO.ItemType.Plate)
 		{
-			GetComponent<Plate>().ActiveCompleteVisual(!newValue);
+			
         }
 	}
 

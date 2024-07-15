@@ -1,6 +1,7 @@
 using Mirror;
 using Org.BouncyCastle.Utilities.IO.Pem;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +15,7 @@ public class PlayerController : NetworkBehaviour
 	[SerializeField] float dashReload = 0.3f;
 	[SerializeField] float dashSpeed = 50.0f;
 	[SerializeField] float rotationSpeed = 15.0f;
+	[SerializeField] AnimationCurve smoothAnimCurve;
 
 	[Header("INTERACTIONS")]
 	[SerializeField] GameObject fakeItem;
@@ -33,8 +35,6 @@ public class PlayerController : NetworkBehaviour
 	bool isDashing = false;
 	bool isHoldingItem = false;
 	bool isHoldingPlate = false;
-
-	[SyncVar(hook = nameof(Hook_TakeDropItem)), HideInInspector] public GameObject takenItem;
 
 	void Start()
 	{
@@ -100,52 +100,12 @@ public class PlayerController : NetworkBehaviour
 		return isHoldingPlate;
 	}
 
-	public void SetIsHoldingItem(bool isHoldingItem)
-	{
-		this.isHoldingItem = isHoldingItem;
-	}
-
-	public void SetIsHoldingPlate(bool isHoldingPlate)
-	{
-		this.isHoldingPlate = isHoldingPlate;
-	}
-
-	public void TakeDropItemFromClearCounter(GameObject droppedItem, bool isItemDestroyed = false)
-	{
-		GameObject oldTakenItem = takenItem;
-
-		if (droppedItem == null)
-			isHoldingItem = isHoldingPlate = false;
-		else
-		{
-			isHoldingItem = true;
-			isHoldingPlate = (droppedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
-		}
-
-		RPC_TakeDropItem(droppedItem, true);
-
-		if (isItemDestroyed)
-			RPC_DestroyItem(oldTakenItem);
-	}
-
-	public void TakeItemFromPantry(GameObject pantryItem)
-	{
-		takenItem = pantryItem;
-	}
-
-	public GameObject DropItemOnDeliveryTable()
-	{
-		GameObject item = takenItem;
-		RemoveTakeItem();
-		return item;
-	}
-
 	public Plate GetFakePlate()
 	{
 		return fakePlate;
 	}
 
-	#region Movements
+	
 	void Move()
 	{
 		stickVector = inputs.InGame.Move.ReadValue<Vector2>();
@@ -171,7 +131,7 @@ public class PlayerController : NetworkBehaviour
 
 	void ApplyGravity()
 	{
-		characterController.Move(transform.up * (-1.0f) * fallSpeed * Time.deltaTime);
+		characterController.Move(-transform.up * fallSpeed * Time.deltaTime);
 	}
 
 	void OnDash(InputAction.CallbackContext context)
@@ -181,6 +141,34 @@ public class PlayerController : NetworkBehaviour
 			canDash = false;
 			isDashing = true;
 			Vector3 destination = transform.position + (transform.forward * dashLength);
+            RaycastHit hitInfo;
+
+			if (Physics.CapsuleCast(transform.position, transform.position + transform.up*characterController.height, characterController.radius, transform.forward, out hitInfo, dashLength))
+			{
+				Vector3 normal = hitInfo.normal;
+				Vector3 point = hitInfo.point;
+
+				Vector3 surfaceVec = Vector3.Cross(normal, Vector3.up).normalized;
+
+				if ((surfaceVec.x < 0 && (Mathf.Abs(surfaceVec.x) > Mathf.Abs(surfaceVec.z))) || (surfaceVec.z < 0 && (Mathf.Abs(surfaceVec.z) > Mathf.Abs(surfaceVec.x))))
+					surfaceVec *= -1.0f;
+
+				Vector3 remainingForce = destination - point;
+
+				Vector3 projection = Vector3.Project(remainingForce, surfaceVec);
+
+				Vector3 radiusOffset = normal * characterController.radius;
+
+                Vector3 finalPoint = point + projection + radiusOffset;
+
+				if (Physics.Raycast(point + radiusOffset, projection, out hitInfo, projection.magnitude + characterController.radius))
+				{
+					finalPoint = hitInfo.point + (hitInfo.normal * characterController.radius);
+				}
+
+                destination = new Vector3(finalPoint.x, transform.position.y, finalPoint.z);
+			}
+
 			StartCoroutine(Dash(destination));
 			StartCoroutine(ReloadDash());
 		}
@@ -188,13 +176,31 @@ public class PlayerController : NetworkBehaviour
 
 	IEnumerator Dash(Vector3 destination)
 	{
-		while ((transform.position - destination).magnitude >= 0.1f)
-		{
-			transform.position = Vector3.Lerp(transform.position, destination, dashSpeed * Time.deltaTime);
-			yield return new WaitForSeconds(Time.deltaTime);
-		}
+        int steps = Mathf.RoundToInt(0.3f / Time.deltaTime);
 
-		isDashing = false;
+        for (int i = 0; i < steps; i++)
+        {
+            float timeRatio = (float)i / steps;
+            float dashFactor = smoothAnimCurve.Evaluate(timeRatio);
+            transform.position = Vector3.Lerp(transform.position, destination, dashFactor);
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        /*float elapsedTime = 0.0f;
+
+		while ((transform.position - destination).magnitude >= 0.05f)
+		{
+
+			elapsedTime += Time.deltaTime;
+			float timeRatio = elapsedTime / 2f;
+			float dashFactor = smoothAnimCurve.Evaluate(timeRatio);
+
+            //transform.position = Vector3.Lerp(transform.position, destination, dashSpeed * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, destination, dashFactor);
+            yield return new WaitForSeconds(Time.deltaTime);
+		}*/
+
+        isDashing = false;
 		yield return null;
 	}
 
@@ -203,116 +209,14 @@ public class PlayerController : NetworkBehaviour
 		yield return new WaitForSeconds(dashReload);
 		canDash = true;
 	}
-	#endregion
 
-	#region ItemGestion
 	void OnTakeDropItem(InputAction.CallbackContext context)
 	{
-		if (!isHoldingItem)
-			TakeItem();
-		else if (isHoldingItem && !isHoldingPlate)
-			DropItem();
-		else if (isHoldingItem && isHoldingPlate)
-			TakeDropWithPlate();
+
 	}
 
-	void OnInteract(InputAction.CallbackContext context)
+    void OnInteract(InputAction.CallbackContext context)
 	{
-		if (!isHoldingItem && targetedFurniture != null)
-			targetedFurniture.GetComponent<Furniture>().OnAction2(this);
+
 	}
-
-	void TakeItem()
-	{
-		if (targetedFurniture == null && targetedItem == null)
-			return;
-
-		if (targetedItem != null)
-		{
-			isHoldingItem = true;
-			isHoldingPlate = (targetedItem.GetComponent<Item>().GetItemSO().itemType == ItemSO.ItemType.Plate);
-			RPC_TakeDropItem(targetedItem, false);
-			return;
-		}
-
-		if (targetedFurniture != null)
-			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
-	}
-
-	void DropItem()
-	{
-		if (targetedFurniture == null)
-		{
-			isHoldingItem = false;
-			isHoldingPlate = false;
-			RPC_TakeDropItem(null, false);
-		}
-		else
-			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
-	}
-
-	void RemoveTakeItem()
-	{
-		takenItem = null;
-	}
-
-	void TakeDropWithPlate()
-	{
-		if (targetedItem != null && fakePlate.CanAddItemOnPlate(targetedItem.GetComponent<Item>()))
-		{
-			ItemSO.ItemType item = targetedItem.GetComponent<Item>().itemType;
-            fakePlate.AddItemInPlate(item);
-			takenItem.GetComponent<Plate>().AddItemInPlate(item);
-			RPC_DestroyItem(targetedItem);
-            return;
-		}
-
-		if (targetedFurniture != null)
-		{
-			targetedFurniture.GetComponent<Furniture>().OnAction1(this);
-			return;
-		}
-
-		DropItem();
-	}
-
-	[Command]
-	void RPC_TakeDropItem(GameObject item, bool isFromFurniture)
-	{
-		GameObject refToTakenItem = takenItem;
-
-		if (item == null && !isFromFurniture)
-			takenItem.GetComponent<NetworkTransformUnreliable>().RpcTeleport(fakeItem.transform.position, fakeItem.transform.rotation);
-
-		if (item != null) item.GetComponent<Item>().isTaken = true;
-		else if (takenItem != null && !isFromFurniture) takenItem.GetComponent<Item>().isTaken = false;
-		else if (item == null && isFromFurniture) refToTakenItem.GetComponent<Item>().isTaken = true;
-
-        takenItem = item;
-	}
-
-	[Command]
-	public void RPC_DestroyItem(GameObject item)
-	{
-        NetworkServer.Destroy(item);
-    }
-
-	void Hook_TakeDropItem(GameObject oldValue, GameObject newValue)
-	{
-		if (newValue != null)
-		{
-			Item item = newValue.GetComponent<Item>();
-			fakeItemVisual.sharedMaterial = item.GetItemSO().material;
-			fakeItemVisualFilter.sharedMesh = item.GetItemSO().mesh;
-
-			if (item.itemType == ItemSO.ItemType.Plate)
-				fakePlate.SetItemsVisuals(item.plateScript.GetItemsList());
-		}
-
-		if (oldValue != null && oldValue.GetComponent<Item>().itemType == ItemSO.ItemType.Plate)
-            fakePlate.ResetVisuals();
-
-        fakeItemVisual.enabled = (newValue == null) ? false : true;
-	}
-	#endregion
 }

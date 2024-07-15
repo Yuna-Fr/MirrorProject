@@ -49,7 +49,7 @@ public class OrderManager : NetworkBehaviour
 
 		if (waitingRecipes.Count != 0)
 		{
-			List<ItemSO> ingredientsList = plate.GetItemSOList();
+			List<ItemSO> ingredientsList = new();// plate.GetItemSOList();
 
 			foreach (RecipeSO recipe in waitingRecipes)
 			{
@@ -57,7 +57,7 @@ public class OrderManager : NetworkBehaviour
 					!recipe.ingredients.Except(ingredientsList).Any() && !ingredientsList.Except(recipe.ingredients).Any())
 				{
 					Debug.Log("Success Recipe, BONUS");
-					plate.ResetVisuals();
+					//plate.ResetVisuals();
 					NetworkServer.Destroy(plateGO);
 					RecipeFinished.Invoke(recipe, true);
 					return;
@@ -66,7 +66,7 @@ public class OrderManager : NetworkBehaviour
 		}
 
 		Debug.Log("Fail Recipe, MALUS");
-		plate.ResetVisuals();
+		//plate.ResetVisuals();
 		NetworkServer.Destroy(plateGO);
 		RecipeFinished.Invoke(null, false);
 	}

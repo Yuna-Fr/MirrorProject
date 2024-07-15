@@ -1078,7 +1078,6 @@ MonoBehaviour:
   syncInterval: 0
   isFakePlate: 1
   completeVisual: {fileID: 2811341625733087009}
-  bread: {fileID: 1434936734396081431}
   cheese: {fileID: 1434936732662190555}
   salad: {fileID: 1434936733592927125}
   tomato: {fileID: 1434936732903249423}
@@ -1722,7 +1721,7 @@ GameObject:
   - component: {fileID: 7344131123800831620}
   - component: {fileID: 8549259789767324668}
   - component: {fileID: 3443091421578884501}
-  - component: {fileID: 1869750499771542054}
+  - component: {fileID: 8422386141677648199}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1770,8 +1769,31 @@ MonoBehaviour:
   dashReload: 0.3
   dashSpeed: 50
   rotationSpeed: 15
+  smoothAnimCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   fakeItem: {fileID: 4655764116627702140}
-  takenItem: {fileID: 0}
 --- !u!114 &2983091547139214609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1796,7 +1818,7 @@ MonoBehaviour:
   furnitureRayLength: 1.3
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   groundRayLength: 0.3
   drawGizmos: 1
   drawIfSelected: 0
@@ -1873,7 +1895,7 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
---- !u!143 &1869750499771542054
+--- !u!143 &8422386141677648199
 CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1893,7 +1915,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
-  m_Radius: 0.5000001
+  m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
