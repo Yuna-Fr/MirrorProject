@@ -635,7 +635,6 @@ MonoBehaviour:
   fakeItemVisual: {fileID: 3074043616853952671}
   fakeItemVisualFilter: {fileID: 4478653371226773296}
   fakePlate: {fileID: 8708528076704988379}
-  droppedItem: {fileID: 0}
 --- !u!114 &3003188681040400161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,7 +659,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3189457260119925810}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 21d34432eb56b8a4fa45aa971d1508c6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1359,7 +1358,6 @@ MonoBehaviour:
   syncInterval: 0
   isFakePlate: 1
   completeVisual: {fileID: 3347523567813226697}
-  bread: {fileID: 7686402826885915649}
   cheese: {fileID: 1121816174674042644}
   salad: {fileID: 4733088006714297887}
   tomato: {fileID: 2915024351271287926}

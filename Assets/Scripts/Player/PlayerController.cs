@@ -44,8 +44,9 @@ public class PlayerController : NetworkBehaviour
 
 		if (!isLocalPlayer)
 			return;
+        
 
-		wasLocalPlayer = true;
+        wasLocalPlayer = true;
 		rigidBody = GetComponent<Rigidbody>();
 
 		inputs = new InputSystem();
@@ -66,7 +67,7 @@ public class PlayerController : NetworkBehaviour
         inputs.InGame.Disable();
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		if (!isLocalPlayer)
 			return;
@@ -116,13 +117,13 @@ public class PlayerController : NetworkBehaviour
 		{
             moveDirection = new(stickVector.x, 0.0f, stickVector.y);
 
-			rigidBody.AddForce(moveDirection * 10, ForceMode.Force);
+			rigidBody.AddForce(moveDirection * 20, ForceMode.Force);
 
 			Vector3 planSpeed = new Vector3 (rigidBody.velocity.x, 0, rigidBody.velocity.z);
 
-			if (planSpeed.magnitude > 2)
+			if (planSpeed.magnitude > 4)
 			{
-				planSpeed = planSpeed.normalized * 2;
+				planSpeed = planSpeed.normalized * 4;
 				rigidBody.velocity = new Vector3(planSpeed.x, rigidBody.velocity.y, planSpeed.z);
 			}
         }
@@ -130,7 +131,7 @@ public class PlayerController : NetworkBehaviour
 		{
             moveDirection = Vector3.zero;
 
-			rigidBody.velocity = new Vector3(rigidBody.velocity.x * 0.9f, rigidBody.velocity.y, rigidBody.velocity.z * 0.9f);
+			rigidBody.velocity = new Vector3(rigidBody.velocity.x * 0.7f, rigidBody.velocity.y, rigidBody.velocity.z * 0.7f);
         }
 
         if (moveDirection != Vector3.zero)
