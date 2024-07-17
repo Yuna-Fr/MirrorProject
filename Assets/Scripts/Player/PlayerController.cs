@@ -8,13 +8,13 @@ using UnityEngine.InputSystem;
 public class PlayerController : NetworkBehaviour
 {
 	[Header("MOVEMENTS")]
-	[SerializeField] float speed = 5.0f;
-	[SerializeField] float fallSpeed = 5.0f;
-	[SerializeField] float stickThreshold = 0.05f;
-	[SerializeField] float dashLength = 2.5f;
-	[SerializeField] float dashReload = 0.3f;
-	[SerializeField] float dashSpeed = 50.0f;
-	[SerializeField] float rotationSpeed = 15.0f;
+    [SerializeField] float stickThreshold = 0.05f;
+    [SerializeField] float walkSpeed = 4.0f;
+	[SerializeField] float fallSpeed = 7.0f;
+    [SerializeField] float dashSpeed = 10.0f;
+    [SerializeField] float rotationSpeed = 13.0f;
+    [SerializeField] float dashTime = 0.2f;
+	[SerializeField] float dashReload = 0.4f;
 	[SerializeField] AnimationCurve smoothAnimCurve;
 
 	[Header("INTERACTIONS")]
@@ -71,8 +71,7 @@ public class PlayerController : NetworkBehaviour
 		if (!isLocalPlayer)
 			return;
 
-		if (!isDashing)
-			Move();
+		Move();
 	}
 
 	public void SetNewTargetedItem(GameObject targetedItem)
@@ -115,7 +114,8 @@ public class PlayerController : NetworkBehaviour
 		else
 			moveDirection = new(stickVector.x, 0.0f, stickVector.y);
 
-		characterController.Move(moveDirection * speed * Time.deltaTime);
+		if (!isDashing)
+			characterController.Move(moveDirection * walkSpeed * Time.deltaTime);
 
 		if (moveDirection != Vector3.zero)
 			Rotate();
@@ -140,68 +140,22 @@ public class PlayerController : NetworkBehaviour
 		{
 			canDash = false;
 			isDashing = true;
-			Vector3 destination = transform.position + (transform.forward * dashLength);
-            RaycastHit hitInfo;
-
-			if (Physics.CapsuleCast(transform.position, transform.position + transform.up*characterController.height, characterController.radius, transform.forward, out hitInfo, dashLength))
-			{
-				Vector3 normal = hitInfo.normal;
-				Vector3 point = hitInfo.point;
-
-				Vector3 surfaceVec = Vector3.Cross(normal, Vector3.up).normalized;
-
-				if ((surfaceVec.x < 0 && (Mathf.Abs(surfaceVec.x) > Mathf.Abs(surfaceVec.z))) || (surfaceVec.z < 0 && (Mathf.Abs(surfaceVec.z) > Mathf.Abs(surfaceVec.x))))
-					surfaceVec *= -1.0f;
-
-				Vector3 remainingForce = destination - point;
-
-				Vector3 projection = Vector3.Project(remainingForce, surfaceVec);
-
-				Vector3 radiusOffset = normal * characterController.radius;
-
-                Vector3 finalPoint = point + projection + radiusOffset;
-
-				if (Physics.Raycast(point + radiusOffset, projection, out hitInfo, projection.magnitude + characterController.radius))
-				{
-					finalPoint = hitInfo.point + (hitInfo.normal * characterController.radius);
-				}
-
-                destination = new Vector3(finalPoint.x, transform.position.y, finalPoint.z);
-			}
-
-			StartCoroutine(Dash(destination));
+			StartCoroutine(Dash());
 			StartCoroutine(ReloadDash());
 		}
 	}
 
-	IEnumerator Dash(Vector3 destination)
+	IEnumerator Dash()
 	{
-        int steps = Mathf.RoundToInt(0.3f / Time.deltaTime);
+		float elapsedTime = 0;
 
-        for (int i = 0; i < steps; i++)
+        while (elapsedTime < dashTime)
         {
-            float timeRatio = (float)i / steps;
-            float dashFactor = smoothAnimCurve.Evaluate(timeRatio);
-            transform.position = Vector3.Lerp(transform.position, destination, dashFactor);
+			characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
             yield return new WaitForSeconds(Time.deltaTime);
-        }
-
-        /*float elapsedTime = 0.0f;
-
-		while ((transform.position - destination).magnitude >= 0.05f)
-		{
-
 			elapsedTime += Time.deltaTime;
-			float timeRatio = elapsedTime / 2f;
-			float dashFactor = smoothAnimCurve.Evaluate(timeRatio);
-
-            //transform.position = Vector3.Lerp(transform.position, destination, dashSpeed * Time.deltaTime);
-            transform.position = Vector3.Lerp(transform.position, destination, dashFactor);
-            yield return new WaitForSeconds(Time.deltaTime);
-		}*/
-
+        }
         isDashing = false;
-		yield return null;
 	}
 
 	IEnumerator ReloadDash()

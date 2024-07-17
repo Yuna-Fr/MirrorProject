@@ -1762,13 +1762,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  speed: 5
-  fallSpeed: 5
   stickThreshold: 0.05
-  dashLength: 2.5
-  dashReload: 0.3
-  dashSpeed: 50
-  rotationSpeed: 15
+  walkSpeed: 4
+  fallSpeed: 7
+  dashSpeed: 10
+  rotationSpeed: 13
+  dashTime: 0.2
+  dashReload: 0.4
   smoothAnimCurve:
     serializedVersion: 2
     m_Curve:
