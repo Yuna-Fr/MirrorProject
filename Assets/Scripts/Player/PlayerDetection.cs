@@ -102,7 +102,7 @@ public class PlayerDetection : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.up * (-1.0f), out groundHitInfo, groundRayLength, groundLayer, QueryTriggerInteraction.Ignore))
         {
-            if (groundHitInfo.distance > 0.01f)
+            if (groundHitInfo.distance > 0.1f)
                 playerController.SetGroundedState(false);
             else
                 playerController.SetGroundedState(true);

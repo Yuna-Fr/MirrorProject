@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8348714163321203058}
   - component: {fileID: 1151268152809216656}
   - component: {fileID: 2168564610365190990}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Eye1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 639091722687003758}
   - component: {fileID: 4571533075223786443}
   - component: {fileID: 1771513710846232321}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tomato slice (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1434936732662190554}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CheeseSlices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +214,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1434936732903249422}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TomatoSlices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1434936733592927124}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CabbageSliced
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -284,7 +284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1434936734396081430}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bread
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 2175277755658096833}
   - component: {fileID: 2999388567542718308}
   - component: {fileID: 1043444554903104430}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cheese slice (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 6336619713781630332}
   - component: {fileID: 2382994992765075269}
   - component: {fileID: 3133874911121221718}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -490,7 +490,7 @@ GameObject:
   - component: {fileID: 2057730374571870821}
   - component: {fileID: 3107867793860347328}
   - component: {fileID: 920328629802283274}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bread bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -575,7 +575,7 @@ GameObject:
   - component: {fileID: 1415981820434736035}
   - component: {fileID: 2596686253976153094}
   - component: {fileID: 283092538895866060}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tomato slice (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -660,7 +660,7 @@ GameObject:
   - component: {fileID: 9128274278199171295}
   - component: {fileID: 9117287824483493341}
   - component: {fileID: 206092446809455641}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pupil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -743,7 +743,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6317694229299272768}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Decoration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -777,7 +777,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2811341625733087008}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlateVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -814,7 +814,7 @@ GameObject:
   - component: {fileID: 8948121800067733047}
   - component: {fileID: 7626151442595827010}
   - component: {fileID: 8613692398989888945}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Eye2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -900,7 +900,7 @@ GameObject:
   - component: {fileID: 3735032026482670672}
   - component: {fileID: 322750933349692405}
   - component: {fileID: 2566580141793412927}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bread top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -986,7 +986,7 @@ GameObject:
   - component: {fileID: 1322006216240924592}
   - component: {fileID: 3477314411933957512}
   - component: {fileID: 1855713589105531987}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FakeHoldItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1090,7 +1090,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6394220852567502721}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DetectionBoxCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1123,7 +1123,7 @@ GameObject:
   - component: {fileID: 4884041017835497116}
   - component: {fileID: 8388027941422541113}
   - component: {fileID: 6020386575791840755}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lattuce slice_shaped (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1208,7 +1208,7 @@ GameObject:
   - component: {fileID: 5976808596759259497}
   - component: {fileID: 7304337586893956812}
   - component: {fileID: 4808383272281821702}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cheese slice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1293,7 +1293,7 @@ GameObject:
   - component: {fileID: 2252423926161873627}
   - component: {fileID: 5788312092227880983}
   - component: {fileID: 1451992837083823447}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1378,7 +1378,7 @@ GameObject:
   - component: {fileID: 7750075657182011930}
   - component: {fileID: 6638894273724116415}
   - component: {fileID: 8919062828072278389}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lattuce slice_shaped (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1463,7 +1463,7 @@ GameObject:
   - component: {fileID: 8709942965165315665}
   - component: {fileID: 5724133879436564980}
   - component: {fileID: 7535861546716015934}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tomato slice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1548,7 +1548,7 @@ GameObject:
   - component: {fileID: 2783433080588949587}
   - component: {fileID: 8495442432970904381}
   - component: {fileID: 7560455649937571541}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pupil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1633,7 +1633,7 @@ GameObject:
   - component: {fileID: 8949942585772676830}
   - component: {fileID: 5448034802367207803}
   - component: {fileID: 7818171438703111601}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cheese slice (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1722,7 +1722,7 @@ GameObject:
   - component: {fileID: 8549259789767324668}
   - component: {fileID: 3443091421578884501}
   - component: {fileID: 8422386141677648199}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1763,13 +1763,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   stickThreshold: 0.05
-  walkSpeed: 4
+  walkSpeed: 6
   fallSpeed: 7
-  dashSpeed: 10
+  dashSpeed: 15
   rotationSpeed: 13
-  dashTime: 0.2
+  dashTime: 0.25
   dashReload: 0.4
-  smoothAnimCurve:
+  smoothDashAnimCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -1782,18 +1782,51 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      time: 0.19902593
+      value: 0.75123453
+      inSlope: 2.0303962
+      outSlope: 2.0303962
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.10618568
+    - serializedVersion: 3
+      time: 0.50160575
+      value: 1.0037457
+      inSlope: -0.0064488063
+      outSlope: -0.0064488063
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.19867931
+    - serializedVersion: 3
+      time: 0.7980821
+      value: 0.7540996
+      inSlope: -1.8544986
+      outSlope: -1.8544986
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.1477137
+    - serializedVersion: 3
+      time: 0.9998681
+      value: 0.000055987388
+      inSlope: -2.2374823
+      outSlope: -2.2374823
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.21408847
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   fakeItem: {fileID: 4655764116627702140}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  itemLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &2983091547139214609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1818,13 +1851,13 @@ MonoBehaviour:
   furnitureRayLength: 1.3
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   groundRayLength: 0.3
   drawGizmos: 1
   drawIfSelected: 0
-  noItemHitColor: {r: 0, g: 1, b: 0, a: 1}
+  noItemHitColor: {r: 0, g: 0.6202929, b: 1, a: 1}
   onItemHitColor: {r: 1, g: 0, b: 0, a: 1}
-  noFurnitureHitColor: {r: 0, g: 1, b: 0, a: 1}
+  noFurnitureHitColor: {r: 0, g: 0.61960787, b: 1, a: 1}
   onFurnitureHitColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &7344131123800831620
 MonoBehaviour:
@@ -1932,7 +1965,7 @@ GameObject:
   - component: {fileID: 8533469638012434486}
   - component: {fileID: 4738669686525327251}
   - component: {fileID: 7361087071195235161}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lattuce slice_shaped (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2017,7 +2050,7 @@ GameObject:
   - component: {fileID: 8540479229798684343}
   - component: {fileID: 4695630473103120658}
   - component: {fileID: 7408083014533475800}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lattuce slice_shaped (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2102,7 +2135,7 @@ GameObject:
   - component: {fileID: 8483870431228529022}
   - component: {fileID: 4761176308344293083}
   - component: {fileID: 7347605103262495249}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lattuce slice_shaped
   m_TagString: Untagged
   m_Icon: {fileID: 0}
