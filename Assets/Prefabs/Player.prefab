@@ -1720,7 +1720,7 @@ GameObject:
   - component: {fileID: 2983091547139214609}
   - component: {fileID: 7344131123800831620}
   - component: {fileID: 8549259789767324668}
-  - component: {fileID: 3443091421578884501}
+  - component: {fileID: -7715035963448016443}
   - component: {fileID: 8422386141677648199}
   m_Layer: 8
   m_Name: Player
@@ -1762,6 +1762,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  ToDeleteTest: 0
   stickThreshold: 0.05
   walkSpeed: 6
   fallSpeed: 7
@@ -1849,10 +1850,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   furnitureRayLength: 1.3
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  groundRayLength: 0.3
   drawGizmos: 1
   drawIfSelected: 0
   noItemHitColor: {r: 0, g: 0.6202929, b: 1, a: 1}
@@ -1893,7 +1890,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &3443091421578884501
+--- !u!114 &-7715035963448016443
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1902,7 +1899,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8710837982379838766}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 1
@@ -1923,11 +1920,10 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  changedDetection: 1
-  positionSensitivity: 0.01
+  onlySyncOnChangeCorrectionMultiplier: 2
   rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!143 &8422386141677648199
 CharacterController:
   m_ObjectHideFlags: 0

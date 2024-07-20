@@ -1,4 +1,5 @@
 using Mirror;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class CustomNetworkManager : NetworkManager
@@ -10,7 +11,9 @@ public class CustomNetworkManager : NetworkManager
 
 	public override void Awake()
 	{
-		base.Awake();
+        Application.runInBackground = true; //To delete later maybe
+
+        base.Awake();
 
 		if (Instance == null)
 			Instance = this;

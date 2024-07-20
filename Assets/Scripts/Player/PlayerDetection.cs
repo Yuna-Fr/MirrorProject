@@ -14,10 +14,6 @@ public class PlayerDetection : MonoBehaviour
     [SerializeField] LayerMask furnitureLayer;
     [SerializeField] float furnitureRayLength = 1.3f;
 
-    [Header("GROUND DETECTION")]
-    [SerializeField] LayerMask groundLayer;
-    [SerializeField] float groundRayLength = 0.3f;
-
     [Header("GIZMOS")]
     [SerializeField] bool drawGizmos = false;
     [SerializeField] bool drawIfSelected = false;
@@ -45,7 +41,6 @@ public class PlayerDetection : MonoBehaviour
             DetectItem();
 
         DetectFurniture();
-        DetectGround();
     }
 
     void DetectFurniture()
@@ -96,19 +91,6 @@ public class PlayerDetection : MonoBehaviour
         }
 
         return detectionBuffer[index].gameObject.GetComponentInParent<Item>().gameObject;
-    }
-
-    void DetectGround()
-    {
-        if (Physics.Raycast(transform.position, transform.up * (-1.0f), out groundHitInfo, groundRayLength, groundLayer, QueryTriggerInteraction.Ignore))
-        {
-            if (groundHitInfo.distance > 0.1f)
-                playerController.SetGroundedState(false);
-            else
-                playerController.SetGroundedState(true);
-        }
-        else
-            playerController.SetGroundedState(false);
     }
 
     private void OnDrawGizmos()
