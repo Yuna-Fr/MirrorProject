@@ -353,7 +353,6 @@ MonoBehaviour:
   syncInterval: 0
   isFakePlate: 0
   completeVisual: {fileID: 8905973500291440692}
-  bread: {fileID: 5724726850482698754}
   cheese: {fileID: 5724726850069089998}
   salad: {fileID: 5724726850748949632}
   tomato: {fileID: 5724726849828063514}

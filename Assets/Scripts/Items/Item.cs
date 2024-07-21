@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class Item : NetworkBehaviour
+public class Item : NetworkBehaviour, ICollisionHandler
 {
     [SerializeField] public Plate plateScript;
 	[SerializeField] MeshRenderer meshRenderer;
@@ -10,20 +10,32 @@ public class Item : NetworkBehaviour
 
     ItemSO itemSO;
     Rigidbody rigidBody;
+	NetworkIdentity networkIdentdity;
 
     [SyncVar(hook = nameof(Hook_IsTaken)), HideInInspector] public bool isTaken = false;
 	[SyncVar(hook = nameof(Hook_SetItem)), HideInInspector] public ItemSO.ItemType itemType;
 
 	private void Start()
 	{
+		itemType = ItemSO.ItemType.Tomato;
+
+		networkIdentdity = GetComponent<NetworkIdentity>();
+
 		if (isServer)
 		{
             rigidBody = gameObject.AddComponent<Rigidbody>();
-			rigidBody.isKinematic = true;
+			//rigidBody.isKinematic = true;
         }
 	}
 
-	public void SetItem(ItemSO.ItemType itemType)
+    public NetworkIdentity GetNetworkIdentity()
+	{
+		return networkIdentdity;
+	}
+
+    #region Autodisplay
+
+    public void SetItem(ItemSO.ItemType itemType)
 	{
 		this.itemType = itemType;
 		itemSO = Resources.Load<ItemSO>($"Items/{itemType}");
@@ -55,4 +67,33 @@ public class Item : NetworkBehaviour
 	{
 		SetItem(newValue);
 	}
+
+    #endregion
+
+    #region Network collisions
+
+    public void OnCollisionReaction(Vector3 direction, float strength, bool isImpulsion, NetworkIdentity savedTarget)
+	{
+		Cmd_OnCollisionReaction(direction, strength, isImpulsion, savedTarget);
+    }
+
+	[Command(requiresAuthority = false)]
+	void Cmd_OnCollisionReaction(Vector3 direction, float strength, bool isImpulsion, NetworkIdentity savedTarget)
+	{
+        ForceMode forceMode = isImpulsion ? ForceMode.Impulse : ForceMode.Force;
+
+        direction = (direction.y < 0) ? new Vector3(direction.x, 0, direction.z) : direction;
+
+        rigidBody.AddForce(direction * strength, forceMode);
+
+		TargetRpc_CollisionHasBeenHandled(savedTarget.connectionToClient, savedTarget, networkIdentdity.netId);
+    }
+
+	[TargetRpc]
+	void TargetRpc_CollisionHasBeenHandled(NetworkConnection networkConnection, NetworkIdentity savedTarget, uint id)
+	{
+        savedTarget.GetComponent<PlayerController>().GetOnCollisionIds()[id] = false;
+    }
+
+    #endregion
 }

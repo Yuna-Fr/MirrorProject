@@ -162,7 +162,7 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
 
     #endregion
 
-    #region Network Collisions
+    #region Network collisions
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -172,20 +172,28 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
         if (!isItem && !isPlayer)
             return;
 
-        ICollisionHandler collisionHandler = hit.gameObject.GetComponent<ICollisionHandler>();
+        ICollisionHandler collisionHandler = hit.gameObject.GetComponentInParent<ICollisionHandler>();
 
         float strength = isDashing ? dashThrust : walkSpeed * stickVector.magnitude * onlineCollisionBooster;
 
+        float collisionAngle = isDashing ? Mathf.Acos(Vector3.Dot(-hit.normal, hit.moveDirection)) * Mathf.Rad2Deg : 0;
+
+        bool isImpulsion = isDashing && collisionAngle < 45.0f;
+
         uint id = collisionHandler.GetNetworkIdentity().netId;
 
-        if (!onCollisionIds.ContainsKey(id) && isPlayer)
+        if (!onCollisionIds.ContainsKey(id))
             onCollisionIds.Add(id, false);
 
-        if (!isPlayer || !onCollisionIds[id])
-            collisionHandler.OnCollisionReaction(-hit.normal, strength, isDashing, networkIdentity);
+        if (!onCollisionIds[id])
+        {
+            collisionHandler.OnCollisionReaction(-hit.normal, strength, isImpulsion, networkIdentity);
+            Debug.Log("CA PASSE !");
+        }
+        else
+            Debug.Log("CA PASSE PAAAAAAAAAAAs !");
 
-        if (isPlayer)
-            onCollisionIds[id] = true;
+        onCollisionIds[id] = true;
     }
 
     public Dictionary<uint, bool> GetOnCollisionIds()
