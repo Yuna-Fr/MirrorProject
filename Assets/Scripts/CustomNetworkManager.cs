@@ -11,8 +11,6 @@ public class CustomNetworkManager : NetworkManager
 
 	public override void Awake()
 	{
-        Application.runInBackground = true; //To delete later maybe
-
         base.Awake();
 
 		if (Instance == null)

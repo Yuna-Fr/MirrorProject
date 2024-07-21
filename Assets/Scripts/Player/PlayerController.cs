@@ -1,92 +1,89 @@
 using Mirror;
-using Org.BouncyCastle.Utilities.IO.Pem;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour, ICollisionHandler
 {
-	[SerializeField] bool ToDeleteTest = false;
-
-	[Header("MOVEMENTS")]
+    [Header("MOVEMENTS")]
     [SerializeField] float stickThreshold = 0.05f;
     [SerializeField] float walkSpeed = 6.0f;
-	[SerializeField] float fallSpeed = 7.0f;
+    [SerializeField] float fallSpeed = 7.0f;
     [SerializeField] float dashSpeed = 15.0f;
     [SerializeField] float rotationSpeed = 13.0f;
     [SerializeField] float dashTime = 0.25f;
-	[SerializeField] float dashReload = 0.4f;
-	[SerializeField] AnimationCurve smoothDashAnimCurve;
+    [SerializeField] float dashReload = 0.4f;
+    [SerializeField] AnimationCurve smoothDashAnimCurve;
 
-	[Header("INTERACTIONS")]
-	[SerializeField] GameObject fakeItem;
-	[SerializeField] LayerMask playerLayer;
-	[SerializeField] LayerMask itemLayer;
+    [Header("INTERACTIONS")]
+    [SerializeField] GameObject fakeItem;
+    [SerializeField] LayerMask playerLayer;
+    [SerializeField] LayerMask itemLayer;
+    [SerializeField] float onlineCollisionBooster = 2.0f;
 
     InputSystem inputs;
     NetworkIdentity networkIdentity;
-	CharacterController characterController;
-	GameObject targetedItem;
-	GameObject targetedFurniture;
-	MeshRenderer fakeItemVisual;
-	MeshFilter fakeItemVisualFilter;
-	Plate fakePlate;
+    CharacterController characterController;
+    GameObject targetedItem;
+    GameObject targetedFurniture;
+    MeshRenderer fakeItemVisual;
+    MeshFilter fakeItemVisualFilter;
+    Plate fakePlate;
     Dictionary<uint, bool> onCollisionIds = new();
-	Vector3 moveDirection;
-	Vector2 stickVector;
-	float dashThrust;
-	bool wasLocalPlayer;
-	bool canDash = true;
-	bool isHoldingItem = false;
-	bool isHoldingPlate = false;
+    Vector3 moveDirection;
+    Vector2 stickVector;
+    float dashThrust;
+    bool wasLocalPlayer;
+    bool canDash = true;
+    bool isHoldingItem = false;
+    bool isHoldingPlate = false;
 
-	[SyncVar] bool isDashing = false;
+    [SyncVar] bool isDashing = false;
 
     void Start()
-	{
+    {
         networkIdentity = GetComponent<NetworkIdentity>();
 
-		fakeItemVisual = fakeItem.GetComponent<MeshRenderer>();
-		fakeItemVisualFilter = fakeItem.GetComponent<MeshFilter>();
-		fakePlate = fakeItem.GetComponent<Plate>();
+        fakeItemVisual = fakeItem.GetComponent<MeshRenderer>();
+        fakeItemVisualFilter = fakeItem.GetComponent<MeshFilter>();
+        fakePlate = fakeItem.GetComponent<Plate>();
 
-		if (!isLocalPlayer)
-			return;
+        if (!isLocalPlayer)
+            return;
 
-		wasLocalPlayer = true;
-		characterController = GetComponent<CharacterController>();
+        wasLocalPlayer = true;
+        characterController = GetComponent<CharacterController>();
 
-		inputs = new InputSystem();
-		inputs.InGame.Enable();
-		inputs.InGame.Dash.performed += OnDash;
-		inputs.InGame.Takedrop.performed += OnTakeDropItem;
-		inputs.InGame.Interact.performed += OnInteract;
+        inputs = new InputSystem();
+        inputs.InGame.Enable();
+        inputs.InGame.Dash.performed += OnDash;
+        inputs.InGame.Takedrop.performed += OnTakeDropItem;
+        inputs.InGame.Interact.performed += OnInteract;
     }
 
-	void OnDestroy()
-	{
-		if (!wasLocalPlayer)
-			return;
+    void OnDestroy()
+    {
+        if (!wasLocalPlayer)
+            return;
 
-		inputs.InGame.Interact.performed -= OnDash;
-		inputs.InGame.Takedrop.performed -= OnTakeDropItem;
+        inputs.InGame.Interact.performed -= OnDash;
+        inputs.InGame.Takedrop.performed -= OnTakeDropItem;
         inputs.InGame.Interact.performed -= OnInteract;
         inputs.InGame.Disable();
-	}
-
-	void Update()
-	{
-		if (!isLocalPlayer)
-			return;
-
-		Move();
     }
 
-    public NetworkIdentity GetNetworkIdentity() 
-    { 
-        return networkIdentity; 
+    void Update()
+    {
+        if (!isLocalPlayer)
+            return;
+
+        Move();
+    }
+
+    public NetworkIdentity GetNetworkIdentity()
+    {
+        return networkIdentity;
     }
 
     #region Movements
@@ -167,11 +164,6 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
 
     #region Network Collisions
 
-    public Dictionary<uint, bool> GetOnCollisionIds()
-    {
-        return onCollisionIds;
-    }
-
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         bool isItem = (itemLayer.value & (1 << hit.gameObject.layer)) != 0;
@@ -182,7 +174,7 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
 
         ICollisionHandler collisionHandler = hit.gameObject.GetComponent<ICollisionHandler>();
 
-        float strength = isDashing ? dashThrust : walkSpeed * stickVector.magnitude;
+        float strength = isDashing ? dashThrust : walkSpeed * stickVector.magnitude * onlineCollisionBooster;
 
         uint id = collisionHandler.GetNetworkIdentity().netId;
 
@@ -196,9 +188,30 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
             onCollisionIds[id] = true;
     }
 
+    public Dictionary<uint, bool> GetOnCollisionIds()
+    {
+        return onCollisionIds;
+    }
+
     public void OnCollisionReaction(Vector3 direction, float strength, bool isImpulsion, NetworkIdentity savedTarget)
     {
         Cmd_OnCollisionReaction(direction, strength, isImpulsion, savedTarget);
+    }
+
+    IEnumerator OnDashCollide(Vector3 direction, float strength, NetworkIdentity savedTarget, uint id)
+    {
+        float impulsion;
+        float elapsedTime = 0;
+        float timeRatio = 1 / dashTime;
+
+        while (elapsedTime < dashTime)
+        {
+            elapsedTime += Time.deltaTime;
+            impulsion = smoothDashAnimCurve.Evaluate(elapsedTime * timeRatio) * strength;
+            characterController.Move(direction * impulsion * Time.deltaTime);
+            yield return null;
+        }
+        Cmd_CollisionHasBeenHandled(savedTarget, id);
     }
 
     [Command(requiresAuthority = false)]
@@ -217,7 +230,10 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     void TargetRpc_OnCollisionReaction(Vector3 direction, float strength, bool isImpulsion, NetworkIdentity savedTarget)
     {
         if (isImpulsion)
+        {
+            StartCoroutine(OnDashCollide(direction, strength, savedTarget, networkIdentity.netId));
             return;
+        }
 
         characterController.Move(direction * strength * Time.deltaTime);
         Cmd_CollisionHasBeenHandled(savedTarget, networkIdentity.netId);
@@ -234,39 +250,39 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     #region Interactions
 
     public void SetNewTargetedItem(GameObject targetedItem)
-	{
-		this.targetedItem = targetedItem;
-	}
+    {
+        this.targetedItem = targetedItem;
+    }
 
-	public void SetNewTargetedFurnitures(GameObject targetedFurniture)
-	{
-		this.targetedFurniture = targetedFurniture;
-	}
+    public void SetNewTargetedFurnitures(GameObject targetedFurniture)
+    {
+        this.targetedFurniture = targetedFurniture;
+    }
 
     public bool IsHoldingItem()
-	{
-		return isHoldingItem;
-	}
+    {
+        return isHoldingItem;
+    }
 
-	public bool IsHoldingPlate()
-	{
-		return isHoldingPlate;
-	}
+    public bool IsHoldingPlate()
+    {
+        return isHoldingPlate;
+    }
 
-	public Plate GetFakePlate()
-	{
-		return fakePlate;
-	}
+    public Plate GetFakePlate()
+    {
+        return fakePlate;
+    }
 
-	void OnTakeDropItem(InputAction.CallbackContext context)
-	{
+    void OnTakeDropItem(InputAction.CallbackContext context)
+    {
 
-	}
+    }
 
     void OnInteract(InputAction.CallbackContext context)
-	{
-		
-	}
+    {
+
+    }
 
     #endregion
 }

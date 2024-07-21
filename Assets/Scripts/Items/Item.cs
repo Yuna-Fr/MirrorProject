@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class Item : NetworkBehaviour
 {
-	public Plate plateScript;
-
+    [SerializeField] public Plate plateScript;
 	[SerializeField] MeshRenderer meshRenderer;
 	[SerializeField] MeshFilter meshFilter;
 	[SerializeField] Collider collider;
