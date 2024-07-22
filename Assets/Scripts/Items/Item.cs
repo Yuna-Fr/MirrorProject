@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class Item : NetworkBehaviour, ICollisionHandler
 {
+	[Header("INTERACTIONS")]
     [SerializeField] public Plate plateScript;
 	[SerializeField] MeshRenderer meshRenderer;
 	[SerializeField] MeshFilter meshFilter;
 	[SerializeField] Collider collider;
+
+	[Header("NET COLLISIONS")]
+	[SerializeField] float dashCollisionNerf = 0.1f;
+	[SerializeField] float rigidbodyMass = 0.5f;
 
     ItemSO itemSO;
     Rigidbody rigidBody;
@@ -17,14 +22,13 @@ public class Item : NetworkBehaviour, ICollisionHandler
 
 	private void Start()
 	{
-		itemType = ItemSO.ItemType.Tomato;
-
 		networkIdentdity = GetComponent<NetworkIdentity>();
 
 		if (isServer)
 		{
             rigidBody = gameObject.AddComponent<Rigidbody>();
-			//rigidBody.isKinematic = true;
+            rigidBody.isKinematic = true;
+            rigidBody.mass = rigidbodyMass;
         }
 	}
 
@@ -84,15 +88,23 @@ public class Item : NetworkBehaviour, ICollisionHandler
 
         direction = (direction.y < 0) ? new Vector3(direction.x, 0, direction.z) : direction;
 
-        rigidBody.AddForce(direction * strength, forceMode);
+		strength = isImpulsion ? strength * dashCollisionNerf : strength;
 
-		TargetRpc_CollisionHasBeenHandled(savedTarget.connectionToClient, savedTarget, networkIdentdity.netId);
+		rigidBody.AddForce(direction * strength * (isImpulsion ? 1.0f : 2.0f), forceMode);
+
+		TargetRpc_CollisionHasBeenHandled(savedTarget.connectionToClient, savedTarget, networkIdentdity.netId, isImpulsion);
     }
 
 	[TargetRpc]
-	void TargetRpc_CollisionHasBeenHandled(NetworkConnection networkConnection, NetworkIdentity savedTarget, uint id)
+	void TargetRpc_CollisionHasBeenHandled(NetworkConnection networkConnection, NetworkIdentity savedTarget, uint id, bool wasImpulsion)
 	{
-        savedTarget.GetComponent<PlayerController>().GetOnCollisionIds()[id] = false;
+		if (wasImpulsion)
+		{
+            savedTarget.GetComponent<PlayerController>().GetOnDashCollisionIds()[id] = false;
+            return;
+		}
+
+        savedTarget.GetComponent<PlayerController>().GetOnCollisionIds()[id]--;
     }
 
     #endregion

@@ -20,7 +20,10 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     [SerializeField] GameObject fakeItem;
     [SerializeField] LayerMask playerLayer;
     [SerializeField] LayerMask itemLayer;
+
+    [Header("NET COLLISONS")]
     [SerializeField] float onlineCollisionBooster = 2.0f;
+    [SerializeField] int allowedCallsWaitAnswer = 2;
 
     InputSystem inputs;
     NetworkIdentity networkIdentity;
@@ -30,7 +33,8 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     MeshRenderer fakeItemVisual;
     MeshFilter fakeItemVisualFilter;
     Plate fakePlate;
-    Dictionary<uint, bool> onCollisionIds = new();
+    Dictionary<uint, int> onCollisionIds = new();
+    Dictionary<uint, bool> onDashCollisionIds = new();
     Vector3 moveDirection;
     Vector2 stickVector;
     float dashThrust;
@@ -178,27 +182,44 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
 
         float collisionAngle = isDashing ? Mathf.Acos(Vector3.Dot(-hit.normal, hit.moveDirection)) * Mathf.Rad2Deg : 0;
 
-        bool isImpulsion = isDashing && collisionAngle < 45.0f;
-
         uint id = collisionHandler.GetNetworkIdentity().netId;
 
-        if (!onCollisionIds.ContainsKey(id))
-            onCollisionIds.Add(id, false);
+        bool isImpulsion = isDashing && collisionAngle < 45.0f;
 
-        if (!onCollisionIds[id])
+        if (isImpulsion)
         {
-            collisionHandler.OnCollisionReaction(-hit.normal, strength, isImpulsion, networkIdentity);
-            Debug.Log("CA PASSE !");
+            if (!onDashCollisionIds.ContainsKey(id))
+                onDashCollisionIds.Add(id, false);
+
+            if (!onDashCollisionIds[id])
+            {
+                collisionHandler.OnCollisionReaction(-hit.normal, strength, isImpulsion, networkIdentity);
+                onDashCollisionIds[id] = true;
+            }
+
         }
         else
-            Debug.Log("CA PASSE PAAAAAAAAAAAs !");
+        {
+            if (!onCollisionIds.ContainsKey(id))
+                onCollisionIds.Add(id, 0);
 
-        onCollisionIds[id] = true;
+            if (onCollisionIds[id] < allowedCallsWaitAnswer)
+            {
+                collisionHandler.OnCollisionReaction(-hit.normal, strength, isImpulsion, networkIdentity);
+                onCollisionIds[id] ++;
+            }
+
+        }
     }
 
-    public Dictionary<uint, bool> GetOnCollisionIds()
+    public Dictionary<uint, int> GetOnCollisionIds()
     {
         return onCollisionIds;
+    }
+
+    public Dictionary<uint, bool> GetOnDashCollisionIds()
+    {
+        return onDashCollisionIds;
     }
 
     public void OnCollisionReaction(Vector3 direction, float strength, bool isImpulsion, NetworkIdentity savedTarget)
@@ -219,7 +240,7 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
             characterController.Move(direction * impulsion * Time.deltaTime);
             yield return null;
         }
-        Cmd_CollisionHasBeenHandled(savedTarget, id);
+        Cmd_CollisionHasBeenHandled(savedTarget, id, true);
     }
 
     [Command(requiresAuthority = false)]
@@ -229,9 +250,9 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     }
 
     [Command(requiresAuthority = false)]
-    void Cmd_CollisionHasBeenHandled(NetworkIdentity savedTarget, uint id)
+    void Cmd_CollisionHasBeenHandled(NetworkIdentity savedTarget, uint id, bool wasImpulsion)
     {
-        TargetRpc_CollisionHasBeenHandled(savedTarget.connectionToClient, savedTarget, id);
+        TargetRpc_CollisionHasBeenHandled(savedTarget.connectionToClient, savedTarget, id, wasImpulsion);
     }
 
     [TargetRpc]
@@ -244,13 +265,19 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
         }
 
         characterController.Move(direction * strength * Time.deltaTime);
-        Cmd_CollisionHasBeenHandled(savedTarget, networkIdentity.netId);
+        Cmd_CollisionHasBeenHandled(savedTarget, networkIdentity.netId, isImpulsion);
     }
 
     [TargetRpc]
-    void TargetRpc_CollisionHasBeenHandled(NetworkConnection connection, NetworkIdentity savedTarget, uint id)
+    void TargetRpc_CollisionHasBeenHandled(NetworkConnection connection, NetworkIdentity savedTarget, uint id, bool wasImpulsion)
     {
-        savedTarget.GetComponent<PlayerController>().GetOnCollisionIds()[id] = false;
+        if (wasImpulsion)
+        {
+            savedTarget.GetComponent<PlayerController>().GetOnDashCollisionIds()[id] = false;
+            return;
+        }
+
+        savedTarget.GetComponent<PlayerController>().GetOnCollisionIds()[id]--;
     }
 
     #endregion

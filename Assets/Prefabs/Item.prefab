@@ -334,6 +334,11 @@ MonoBehaviour:
   meshRenderer: {fileID: 3019326741532310066}
   meshFilter: {fileID: 5336550314263005672}
   collider: {fileID: 5915335243121615541}
+  dashCollisionNerf: 0.1
+  rigidbodyMass: 0.5
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   isTaken: 0
   itemType: 0
 --- !u!114 &361841390937863119

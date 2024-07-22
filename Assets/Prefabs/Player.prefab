@@ -1828,6 +1828,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   onlineCollisionBooster: 2
+  allowedCallsWaitAnswer: 2
 --- !u!114 &2983091547139214609
 MonoBehaviour:
   m_ObjectHideFlags: 0
