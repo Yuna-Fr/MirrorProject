@@ -587,7 +587,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5346586791456998913}
-  - component: {fileID: 5507502504978757891}
   - component: {fileID: 3003188681040400161}
   - component: {fileID: 3761205678773916323}
   m_Layer: 7
@@ -614,28 +613,6 @@ Transform:
   - {fileID: 6459085731396459677}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &5507502504978757891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3189457260119925810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e844945446f8c0b4889807dc2b0a68af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  hasContainer: 1
-  isUsable: 0
-  itemContainer: {fileID: 1725324618874274613}
-  fakeItemVisual: {fileID: 3074043616853952671}
-  fakeItemVisualFilter: {fileID: 4478653371226773296}
-  fakePlate: {fileID: 8708528076704988379}
-  droppedItem: {fileID: 0}
 --- !u!114 &3003188681040400161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1359,7 +1336,6 @@ MonoBehaviour:
   syncInterval: 0
   isFakePlate: 1
   completeVisual: {fileID: 3347523567813226697}
-  bread: {fileID: 7686402826885915649}
   cheese: {fileID: 1121816174674042644}
   salad: {fileID: 4733088006714297887}
   tomato: {fileID: 2915024351271287926}

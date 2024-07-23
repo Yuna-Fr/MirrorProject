@@ -587,7 +587,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5346586791456998913}
-  - component: {fileID: 8684578829371750548}
   - component: {fileID: 3003188681040400161}
   - component: {fileID: 3761205678773916323}
   m_Layer: 7
@@ -614,28 +613,6 @@ Transform:
   - {fileID: 1725324618874274613}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &8684578829371750548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3189457260119925810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2451b10fe0d62f8498c70bd14e1aeaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  hasContainer: 1
-  isUsable: 1
-  itemContainer: {fileID: 1725324618874274613}
-  fakeItemVisual: {fileID: 3074043616853952671}
-  fakeItemVisualFilter: {fileID: 4478653371226773296}
-  cutablesItems: 020000000400000009000000
-  droppedItem: {fileID: 0}
 --- !u!114 &3003188681040400161
 MonoBehaviour:
   m_ObjectHideFlags: 0
