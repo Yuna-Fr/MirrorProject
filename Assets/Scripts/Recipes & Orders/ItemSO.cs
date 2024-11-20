@@ -9,7 +9,7 @@ public class ItemSO : ScriptableObject
 	public Mesh mesh;
 	public Material material;
 	public ItemType nextItemType;
-
+		
 	public enum ItemType
 	{
 		None,

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerDetection : MonoBehaviour
 {
-    [Header("ITEM DETECTION")]
+    [Header("SPACEBOX DETECTION")]
     [SerializeField] Transform detectionBoxCenter;
     [SerializeField] Vector3 halfExtentsBox = new Vector3(0.65f,0.75f,0.65f);
-    [SerializeField] LayerMask itemLayer;
+    [SerializeField] LayerMask spaceBoxLayer;
     [SerializeField] int detectionBufferSize = 10;
 
     [Header("FURNITURE DETECTION")]
@@ -17,9 +17,9 @@ public class PlayerDetection : MonoBehaviour
     [Header("GIZMOS")]
     [SerializeField] bool drawGizmos = false;
     [SerializeField] bool drawIfSelected = false;
-    [SerializeField] Color noItemHitColor = Color.green;
+    [SerializeField] Color noItemHitColor = Color.blue;
     [SerializeField] Color onItemHitColor = Color.red;
-    [SerializeField] Color noFurnitureHitColor = Color.green;
+    [SerializeField] Color noFurnitureHitColor = Color.blue;
     [SerializeField] Color onFurnitureHitColor = Color.red;
 
     PlayerController playerController;
@@ -37,8 +37,8 @@ public class PlayerDetection : MonoBehaviour
 
     void Update()
     {
-        if (!playerController.IsHoldingItem() || (playerController.IsHoldingItem() && playerController.IsHoldingPlate()))
-            DetectItem();
+        /*if (!playerController.IsHoldingItem() || (playerController.IsHoldingItem() && playerController.IsHoldingPlate()))
+            DetectItem();*/
 
         DetectFurniture();
     }
@@ -59,7 +59,7 @@ public class PlayerDetection : MonoBehaviour
 
     void DetectItem()
     {
-        int hits = Physics.OverlapBoxNonAlloc(detectionBoxCenter.position, halfExtentsBox, detectionBuffer, transform.rotation, itemLayer, QueryTriggerInteraction.Ignore);
+        int hits = Physics.OverlapBoxNonAlloc(detectionBoxCenter.position, halfExtentsBox, detectionBuffer, transform.rotation, spaceBoxLayer, QueryTriggerInteraction.Ignore);
 
         if (hits > 0)
         {
@@ -90,7 +90,7 @@ public class PlayerDetection : MonoBehaviour
             }
         }
 
-        return detectionBuffer[index].gameObject.GetComponentInParent<Item>().gameObject;
+        return detectionBuffer[index].gameObject.GetComponentInParent<SpaceBox>().gameObject;
     }
 
     private void OnDrawGizmos()
@@ -107,7 +107,7 @@ public class PlayerDetection : MonoBehaviour
 
         Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
 
-        if (!Application.isPlaying || (Application.isPlaying && (!playerController.IsHoldingItem()) || (playerController.IsHoldingItem() && playerController.IsHoldingPlate())))
+        if (!Application.isPlaying)// || (Application.isPlaying && (!playerController.IsHoldingItem()) || (playerController.IsHoldingItem() && playerController.IsHoldingPlate())))
             Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox * 2);
 
         Gizmos.matrix = defaultMatrix;
@@ -134,7 +134,7 @@ public class PlayerDetection : MonoBehaviour
 
         Gizmos.matrix = detectionBoxCenter.localToWorldMatrix;
 
-        if (!Application.isPlaying || (Application.isPlaying && (!playerController.IsHoldingItem() || (playerController.IsHoldingItem() && playerController.IsHoldingPlate()))))
+        if (!Application.isPlaying)// || (Application.isPlaying && (!playerController.IsHoldingItem() || (playerController.IsHoldingItem() && playerController.IsHoldingPlate()))))
             Gizmos.DrawWireCube(Vector3.zero, halfExtentsBox*2);
 
         Gizmos.matrix = defaultMatrix;

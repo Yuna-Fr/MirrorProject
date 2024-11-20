@@ -39,13 +39,14 @@ public class OrderManager : NetworkBehaviour
 		if (!isServer)
 			return;
 
-		Plate plate = plateGO.GetComponent<Plate>();
+		//Item plate = plateGO.GetComponent<Item>();
 
-		if (!plate)
+		/*if (!plate)
 		{
 			Debug.LogError($"No plate Componenet found in {plateGO}");
 			return;
-		}
+		}*/
+		return; //to delete
 
 		if (waitingRecipes.Count != 0)
 		{

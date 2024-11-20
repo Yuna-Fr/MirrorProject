@@ -19,7 +19,7 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     [Header("INTERACTIONS")]
     [SerializeField] GameObject fakeItem;
     [SerializeField] LayerMask playerLayer;
-    [SerializeField] LayerMask itemLayer;
+    [SerializeField] LayerMask spaceBoxLayer;
 
     [Header("NET COLLISONS")]
     [SerializeField] float onlineCollisionBooster = 2.0f;
@@ -30,9 +30,6 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     CharacterController characterController;
     GameObject targetedItem;
     GameObject targetedFurniture;
-    MeshRenderer fakeItemVisual;
-    MeshFilter fakeItemVisualFilter;
-    Plate fakePlate;
     Dictionary<uint, int> onCollisionIds = new();
     Dictionary<uint, bool> onDashCollisionIds = new();
     Vector3 moveDirection;
@@ -41,17 +38,12 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     bool wasLocalPlayer;
     bool canDash = true;
     bool isHoldingItem = false;
-    bool isHoldingPlate = false;
 
     [SyncVar] bool isDashing = false;
 
     void Start()
     {
         networkIdentity = GetComponent<NetworkIdentity>();
-
-        fakeItemVisual = fakeItem.GetComponent<MeshRenderer>();
-        fakeItemVisualFilter = fakeItem.GetComponent<MeshFilter>();
-        fakePlate = fakeItem.GetComponent<Plate>();
 
         if (!isLocalPlayer)
             return;
@@ -170,10 +162,10 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        bool isItem = (itemLayer.value & (1 << hit.gameObject.layer)) != 0;
+        bool isSpaceBox = (spaceBoxLayer.value & (1 << hit.gameObject.layer)) != 0;
         bool isPlayer = (playerLayer.value & (1 << hit.gameObject.layer)) != 0;
 
-        if (!isItem && !isPlayer)
+        if (!isSpaceBox && !isPlayer)
             return;
 
         ICollisionHandler collisionHandler = hit.gameObject.GetComponentInParent<ICollisionHandler>();
@@ -196,7 +188,6 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
                 collisionHandler.OnCollisionReaction(-hit.normal, strength, isImpulsion, networkIdentity);
                 onDashCollisionIds[id] = true;
             }
-
         }
         else
         {
@@ -208,7 +199,6 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
                 collisionHandler.OnCollisionReaction(-hit.normal, strength, isImpulsion, networkIdentity);
                 onCollisionIds[id] ++;
             }
-
         }
     }
 
@@ -297,16 +287,6 @@ public class PlayerController : NetworkBehaviour, ICollisionHandler
     public bool IsHoldingItem()
     {
         return isHoldingItem;
-    }
-
-    public bool IsHoldingPlate()
-    {
-        return isHoldingPlate;
-    }
-
-    public Plate GetFakePlate()
-    {
-        return fakePlate;
     }
 
     void OnTakeDropItem(InputAction.CallbackContext context)
